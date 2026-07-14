@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EnglishStar — 英语学习平台</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pink:#FF6B9D;--pink-light:#FFF0F5;--purple:#C084FC;--purple-light:#F3E8FF;
+  --blue:#60A5FA;--yellow:#FBBF24;--green:#4ADE80;--red:#F87171;
+  --dark:#1E293B;--gray:#64748B;--gray-light:#F1F5F9;--white:#FFFFFF;
+  --shadow:0 2px 12px rgba(0,0,0,0.08);--radius:12px;
+  --font-body:'Segoe UI','Microsoft YaHei',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--gray-light);color:var(--dark);display:flex;min-height:100vh;overflow:hidden}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#94A3B8}
+
+/* === SIDEBAR === */
+#sidebar{width:220px;background:linear-gradient(180deg,#1E293B 0%,#334155 100%);color:#fff;display:flex;flex-direction:column;flex-shrink:0;position:relative;z-index:10}
+.logo{padding:28px 20px 20px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.1)}
+.logo h1{font-size:22px;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:1px}
+.logo p{font-size:11px;color:#94A3B8;margin-top:4px}
+.nav-items{flex:1;padding:16px 0}
+.nav-item{display:flex;align-items:center;gap:12px;padding:14px 24px;cursor:pointer;transition:all .2s;color:#CBD5E1;font-size:14px;border-left:3px solid transparent}
+.nav-item:hover{background:rgba(255,255,255,0.05);color:#fff}
+.nav-item.active{background:rgba(255,107,157,0.12);color:var(--pink);border-left-color:var(--pink);font-weight:600}
+.nav-icon{font-size:18px;width:24px;text-align:center}
+.user-card{padding:20px;border-top:1px solid rgba(255,255,255,0.1);text-align:center}
+.user-card .avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--purple));display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:20px}
+.user-card .name{font-size:13px;color:#E2E8F0}
+.user-card .level{font-size:11px;color:var(--yellow);margin-top:2px}
+
+/* === MAIN === */
+#main{flex:1;overflow-y:auto;height:100vh}
+.section{display:none;padding:32px 40px;animation:fadeIn .3s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.section-header{margin-bottom:28px}
+.section-header h2{font-size:26px;color:var(--dark);margin-bottom:6px}
+.section-header p{color:var(--gray);font-size:14px}
+
+/* === HOME === */
+.welcome-banner{background:linear-gradient(135deg,#FF6B9D 0%,#C084FC 50%,#60A5FA 100%);border-radius:20px;padding:40px;color:#fff;margin-bottom:32px;position:relative;overflow:hidden}
+.welcome-banner h2{font-size:28px;margin-bottom:8px;position:relative;z-index:1}
+.welcome-banner p{font-size:15px;opacity:.9;position:relative;z-index:1;max-width:500px;line-height:1.6}
+.welcome-banner::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.1)}
+.welcome-banner::before{content:'';position:absolute;right:60px;bottom:-60px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,0.08)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+.stat-card{background:#fff;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);text-align:center}
+.stat-card .stat-icon{font-size:28px;margin-bottom:8px}
+.stat-card .stat-value{font-size:28px;font-weight:700;color:var(--dark)}
+.stat-card .stat-label{font-size:12px;color:var(--gray);margin-top:4px}
+.quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.action-card{background:#fff;border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);cursor:pointer;transition:all .25s;border:2px solid transparent}
+.action-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.12);border-color:var(--pink)}
+.action-card h3{font-size:16px;margin-bottom:8px;color:var(--dark)}
+.action-card p{font-size:13px;color:var(--gray);line-height:1.5}
+.action-card .card-icon{font-size:36px;margin-bottom:12px}
+
+/* === LESSON CARDS === */
+.lesson-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.lesson-card{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:all .25s}
+.lesson-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.12)}
+.lesson-thumb{height:160px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative}
+.lesson-thumb .tag{position:absolute;top:12px;left:12px;background:var(--pink);color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600}
+.lesson-thumb .duration{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,0.6);color:#fff;font-size:11px;padding:2px 8px;border-radius:4px}
+.lesson-info{padding:16px}
+.lesson-info h3{font-size:15px;margin-bottom:6px;color:var(--dark)}
+.lesson-info p{font-size:12px;color:var(--gray);line-height:1.5}
+.lesson-meta{display:flex;gap:12px;margin-top:10px;font-size:11px;color:var(--gray)}
+.lesson-meta span{display:flex;align-items:center;gap:4px}
+
+/* === VIDEO LESSON VIEW === */
+.lesson-view{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.video-area{background:#000;border-radius:var(--radius);overflow:hidden;aspect-ratio:16/9}
+.video-area iframe{width:100%;height:100%;border:none}
+.transcript-panel{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;max-height:500px}
+.transcript-header{padding:16px 20px;border-bottom:1px solid #E2E8F0;display:flex;justify-content:space-between;align-items:center}
+.transcript-header h3{font-size:15px;color:var(--dark)}
+.transcript-body{flex:1;overflow-y:auto;padding:16px 20px}
+.transcript-line{padding:8px 12px;border-radius:8px;cursor:pointer;transition:background .2s;margin-bottom:4px;line-height:1.7;font-size:14px}
+.transcript-line:hover{background:var(--gray-light)}
+.transcript-line.active{background:var(--pink-light);border-left:3px solid var(--pink)}
+.transcript-line .zh{display:block;font-size:12px;color:var(--gray);margin-top:2px}
+.transcript-line .vocab-word{background:rgba(255,107,157,0.15);color:var(--pink);padding:1px 4px;border-radius:3px;cursor:pointer;font-weight:600;transition:all .2s}
+.transcript-line .vocab-word:hover{background:var(--pink);color:#fff}
+.lesson-sidebar{grid-column:1/-1;margin-top:24px}
+.vocab-section{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
+.vocab-section h3{font-size:16px;margin-bottom:16px;color:var(--dark);display:flex;align-items:center;gap:8px}
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.vocab-item{background:var(--gray-light);border-radius:8px;padding:12px 16px;cursor:pointer;transition:all .2s;border:2px solid transparent}
+.vocab-item:hover{border-color:var(--purple);background:var(--purple-light)}
+.vocab-item .word{font-size:15px;font-weight:600;color:var(--dark)}
+.vocab-item .phonetic{font-size:11px;color:var(--gray);margin-top:2px}
+.vocab-item .meaning{font-size:12px;color:var(--blue);margin-top:4px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--gray);font-size:13px;cursor:pointer;margin-bottom:16px;padding:6px 12px;border-radius:6px;transition:all .2s;background:none;border:none;font-family:var(--font-body)}
+.back-btn:hover{background:var(--gray-light);color:var(--dark)}
+
+/* === VIDEO FALLBACK === */
+.video-container{position:relative;border-radius:var(--radius);overflow:hidden;background:#000}
+.video-fallback{display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;background:linear-gradient(135deg,#1E293B,#334155);color:#fff;text-align:center;min-height:280px;border-radius:var(--radius)}
+.video-fallback.show{display:flex}
+.video-fallback .vf-icon{font-size:48px;margin-bottom:12px}
+.video-fallback .vf-title{font-size:17px;font-weight:600;margin-bottom:6px}
+.video-fallback .vf-desc{font-size:13px;color:#94A3B8;margin-bottom:20px;line-height:1.6}
+.platform-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.platform-tab{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;border:2px solid #475569;background:transparent;color:#CBD5E1;text-decoration:none;transition:all .2s;font-family:var(--font-body)}
+.platform-tab:hover{border-color:var(--pink);color:var(--pink);background:rgba(255,107,157,0.08)}
+.platform-tab.primary{border-color:var(--pink);background:var(--pink);color:#fff}
+.platform-tab.primary:hover{background:#E8527A}
+.source-switch{display:flex;gap:8px;align-items:center;margin-bottom:20px;padding:12px 16px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow)}
+.source-switch label{font-size:13px;color:var(--gray)}
+.source-switch select{padding:6px 12px;border:2px solid #E2E8F0;border-radius:6px;font-size:13px;font-family:var(--font-body);outline:none;cursor:pointer}
+.source-switch select:focus{border-color:var(--pink)}
+.video-hint{font-size:12px;color:#94A3B8;margin-top:12px;padding:8px 16px;background:rgba(255,255,255,0.05);border-radius:6px}
+.video-hint a{color:var(--blue);text-decoration:none}
+.video-hint a:hover{text-decoration:underline}
+
+/* === READING AUDIO & SELECTION === */
+.reading-audio-bar{display:flex;align-items:center;gap:10px;padding:14px 20px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px;flex-wrap:wrap}
+.reading-audio-bar .ra-label{font-size:14px;font-weight:600;color:var(--dark)}
+.reading-audio-bar button{padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-family:var(--font-body);font-size:12px;transition:all .2s}
+.btn-play{background:var(--green);color:#fff}
+.btn-play:hover{background:#22C55E}
+.btn-play.active{background:var(--yellow);color:var(--dark)}
+.btn-pause{background:#E2E8F0;color:var(--dark)}
+.btn-pause:hover{background:#CBD5E1}
+.btn-stop{background:#E2E8F0;color:var(--gray)}
+.btn-stop:hover{background:#CBD5E1}
+.speed-control{display:flex;align-items:center;gap:4px;margin-left:auto}
+.speed-btn{padding:4px 10px;border-radius:4px;border:2px solid #E2E8F0;background:#fff;cursor:pointer;font-family:var(--font-body);font-size:12px;transition:all .2s}
+.speed-btn.active{border-color:var(--pink);background:var(--pink-light);color:var(--pink)}
+.reading-content p.reading-para{transition:background .3s,padding .3s;border-radius:6px;padding:4px 8px;margin:-4px -8px 12px}
+.reading-content p.reading-para.speaking{background:rgba(255,107,157,0.08);border-left:3px solid var(--pink);padding-left:12px}
+.reading-hint{text-align:center;font-size:12px;color:var(--gray);margin-bottom:12px;padding:8px 16px;background:var(--purple-light);border-radius:8px}
+
+/* === READING === */
+.reading-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.reading-card{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:all .25s}
+.reading-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.12)}
+.reading-cover{height:140px;display:flex;align-items:center;justify-content:center;font-size:48px}
+.reading-body{padding:16px}
+.reading-body h3{font-size:15px;margin-bottom:6px}
+.reading-body p{font-size:12px;color:var(--gray);line-height:1.5}
+.reading-view{max-width:800px;margin:0 auto}
+.reading-content{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:32px 40px;line-height:2;font-size:15px}
+.reading-content h3{font-size:20px;margin-bottom:16px;color:var(--dark);text-align:center}
+.reading-content p{margin-bottom:16px;text-align:justify}
+.reading-content .clickable{cursor:pointer;border-bottom:1px dashed var(--purple);transition:all .2s}
+.reading-content .clickable:hover{background:var(--purple-light);color:var(--purple)}
+.reading-vocab{margin-top:24px;background:var(--purple-light);border-radius:var(--radius);padding:20px}
+.reading-vocab h4{font-size:14px;margin-bottom:12px;color:var(--dark)}
+.reading-vocab-list{display:flex;flex-wrap:wrap;gap:8px}
+.reading-vocab-tag{background:#fff;padding:4px 12px;border-radius:20px;font-size:12px;color:var(--dark);cursor:pointer;transition:all .2s;border:1px solid #E2E8F0}
+.reading-vocab-tag:hover{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+/* === VOCABULARY CENTER === */
+.vocab-tabs{display:flex;gap:8px;margin-bottom:24px}
+.vocab-tab{padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;border:none;background:#fff;color:var(--gray);font-family:var(--font-body);box-shadow:var(--shadow);transition:all .2s}
+.vocab-tab.active{background:var(--pink);color:#fff}
+.vocab-panel{display:none}
+.vocab-panel.active{display:block}
+.wordlist-selector{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.wordlist-btn{padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;border:2px solid #E2E8F0;background:#fff;color:var(--dark);font-family:var(--font-body);transition:all .2s}
+.wordlist-btn.active{border-color:var(--pink);background:var(--pink-light);color:var(--pink)}
+.wordlist-table{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.wordlist-row{display:grid;grid-template-columns:1fr 100px 80px 120px;padding:12px 20px;border-bottom:1px solid #F1F5F9;align-items:center;font-size:13px;transition:background .2s}
+.wordlist-row:hover{background:var(--gray-light)}
+.wordlist-row.header{background:var(--gray-light);font-weight:600;color:var(--gray);font-size:12px}
+.wordlist-row .star{cursor:pointer;font-size:16px;color:#CBD5E1;transition:color .2s}
+.wordlist-row .star.starred{color:var(--yellow)}
+
+/* Flashcard */
+.flashcard-area{display:flex;flex-direction:column;align-items:center;gap:24px}
+.flashcard-controls{display:flex;gap:12px;align-items:center}
+.flashcard-counter{font-size:14px;color:var(--gray)}
+.flashcard{width:360px;height:220px;perspective:1000px;cursor:pointer}
+.flashcard-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flashcard.flipped .flashcard-inner{transform:rotateY(180deg)}
+.flashcard-front,.flashcard-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
+.flashcard-front{background:#fff}
+.flashcard-front .fc-word{font-size:32px;font-weight:700;color:var(--dark)}
+.flashcard-front .fc-phonetic{font-size:14px;color:var(--gray);margin-top:8px}
+.flashcard-front .fc-hint{font-size:11px;color:#CBD5E1;margin-top:20px}
+.flashcard-back{background:linear-gradient(135deg,var(--pink-light),var(--purple-light));transform:rotateY(180deg)}
+.flashcard-back .fc-pos{font-size:12px;color:var(--purple);font-weight:600}
+.flashcard-back .fc-meaning{font-size:22px;color:var(--dark);margin-top:8px;font-weight:600}
+.flashcard-back .fc-example{font-size:12px;color:var(--gray);margin-top:12px;padding:0 20px;text-align:center;font-style:italic}
+.fc-nav-btn{padding:10px 24px;border-radius:8px;font-size:13px;cursor:pointer;border:none;font-family:var(--font-body);transition:all .2s}
+.fc-nav-btn.primary{background:var(--pink);color:#fff}
+.fc-nav-btn.primary:hover{background:#E8527A}
+.fc-nav-btn.secondary{background:#fff;color:var(--gray);box-shadow:var(--shadow)}
+
+/* === QUIZ === */
+.quiz-menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.quiz-type-card{background:#fff;border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);cursor:pointer;transition:all .25s;text-align:center;border:2px solid transparent}
+.quiz-type-card:hover{transform:translateY(-4px);border-color:var(--blue)}
+.quiz-type-card .qicon{font-size:42px;margin-bottom:12px}
+.quiz-type-card h3{font-size:16px;margin-bottom:6px}
+.quiz-type-card p{font-size:12px;color:var(--gray);line-height:1.5}
+.quiz-area{max-width:640px;margin:0 auto}
+.quiz-progress{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.quiz-progress-bar{flex:1;height:8px;background:#E2E8F0;border-radius:4px;overflow:hidden}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--purple));border-radius:4px;transition:width .4s}
+.quiz-progress-text{font-size:13px;color:var(--gray);white-space:nowrap}
+.quiz-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:32px}
+.quiz-question{font-size:18px;font-weight:600;margin-bottom:24px;text-align:center;line-height:1.6}
+.quiz-question .qword{font-size:28px;color:var(--pink);display:block;margin:8px 0}
+.quiz-options{display:grid;gap:12px}
+.quiz-option{padding:14px 20px;border:2px solid #E2E8F0;border-radius:10px;cursor:pointer;transition:all .2s;font-size:14px;background:#fff;font-family:var(--font-body);text-align:left}
+.quiz-option:hover{border-color:var(--blue);background:#F0F9FF}
+.quiz-option.correct{border-color:var(--green);background:#F0FDF4;color:#166534}
+.quiz-option.wrong{border-color:var(--red);background:#FEF2F2;color:#991B1B}
+.quiz-option.disabled{pointer-events:none;opacity:.7}
+.quiz-spell-input{width:100%;padding:14px 20px;border:2px solid #E2E8F0;border-radius:10px;font-size:18px;text-align:center;font-family:var(--font-body);outline:none;transition:border-color .2s;letter-spacing:2px}
+.quiz-spell-input:focus{border-color:var(--blue)}
+.quiz-spell-input.correct{border-color:var(--green);background:#F0FDF4}
+.quiz-spell-input.wrong{border-color:var(--red);background:#FEF2F2}
+.quiz-submit{display:block;margin:16px auto 0;padding:12px 32px;border-radius:8px;font-size:14px;cursor:pointer;border:none;background:var(--pink);color:#fff;font-family:var(--font-body);font-weight:600;transition:all .2s}
+.quiz-submit:hover{background:#E8527A}
+.quiz-result{text-align:center;padding:40px}
+.quiz-score{font-size:64px;font-weight:700;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.quiz-result p{color:var(--gray);margin-top:8px;font-size:14px}
+.quiz-next-btn{display:inline-block;margin-top:20px;padding:12px 32px;border-radius:8px;font-size:14px;cursor:pointer;border:none;background:var(--pink);color:#fff;font-family:var(--font-body);font-weight:600;transition:all .2s}
+.quiz-next-btn:hover{background:#E8527A}
+
+/* === WORD POPUP === */
+#wordPopup{position:fixed;display:none;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.18);padding:20px 24px;z-index:1000;min-width:260px;max-width:340px;animation:popIn .2s ease}
+@keyframes popIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+#wordPopup .wp-word{font-size:22px;font-weight:700;color:var(--dark)}
+#wordPopup .wp-phonetic{font-size:13px;color:var(--gray);margin-top:2px}
+#wordPopup .wp-pos{display:inline-block;background:var(--purple-light);color:var(--purple);font-size:11px;padding:2px 8px;border-radius:4px;margin-top:8px;font-weight:600}
+#wordPopup .wp-meaning{font-size:15px;color:var(--dark);margin-top:10px;line-height:1.6}
+#wordPopup .wp-example{font-size:12px;color:var(--gray);margin-top:8px;font-style:italic;line-height:1.5;padding:8px 12px;background:var(--gray-light);border-radius:6px}
+#wordPopup .wp-star{position:absolute;top:16px;right:16px;cursor:pointer;font-size:20px;color:#CBD5E1;transition:color .2s}
+#wordPopup .wp-star.starred{color:var(--yellow)}
+#wordPopup .wp-close{position:absolute;top:12px;right:40px;cursor:pointer;font-size:16px;color:#CBD5E1;background:none;border:none}
+.wp-speak{display:inline-block;margin-left:8px;cursor:pointer;font-size:14px;color:var(--blue)}
+
+/* === SEARCH === */
+.search-box{position:relative;margin-bottom:20px}
+.search-box input{width:100%;padding:12px 20px 12px 44px;border:2px solid #E2E8F0;border-radius:10px;font-size:14px;font-family:var(--font-body);outline:none;transition:border-color .2s}
+.search-box input:focus{border-color:var(--pink)}
+.search-box .search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:#CBD5E1;font-size:16px}
+
+/* === LESSON MODE & NOTICE === */
+.lesson-notice{padding:10px 16px;background:var(--purple-light);border-radius:8px;font-size:12px;color:var(--dark);line-height:1.6;margin-bottom:12px;border-left:3px solid var(--purple)}
+.lesson-notice strong{color:var(--purple)}
+.mode-switcher{display:flex;gap:6px;margin-bottom:12px}
+.mode-btn{padding:6px 16px;border-radius:20px;border:2px solid #E2E8F0;background:#fff;font-size:12px;cursor:pointer;transition:all .2s;font-family:var(--font-body)}
+.mode-btn.active{background:var(--pink);color:#fff;border-color:var(--pink)}
+.mode-btn:hover:not(.active){border-color:var(--pink);color:var(--pink)}
+.lesson-view.focus-reading .video-area{display:none}
+.lesson-view.focus-reading .transcript-panel{max-height:none}
+.lesson-view.focus-reading{grid-template-columns:1fr}
+.lesson-view.video-only .transcript-panel{display:none}
+.lesson-view.video-only .lesson-sidebar{display:none}
+.lesson-view.video-only{grid-template-columns:1fr}
+.lesson-view.video-only .video-area{max-width:100%;width:100%;aspect-ratio:auto;height:calc(100vh - 220px);min-height:400px}
+.lesson-view.video-only .video-area iframe{width:100%;height:100%;border:none;border-radius:var(--radius)}
+
+/* === RESPONSIVE === */
+@media(max-width:1024px){
+  .lesson-view{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+}
+/* === MOBILE / TABLET === */
+.mobile-menu-btn{display:none;position:fixed;top:12px;left:12px;z-index:100;width:44px;height:44px;border-radius:12px;border:none;background:var(--pink);color:#fff;font-size:22px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);touch-action:manipulation}
+.mobile-menu-btn:active{transform:scale(0.95)}
+.mobile-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:49}
+@media(max-width:900px){
+  .mobile-menu-btn{display:flex;align-items:center;justify-content:center}
+  body{flex-direction:column;overflow:auto}
+  #sidebar{position:fixed;top:0;left:-260px;width:250px;height:100%;z-index:50;transition:left .3s ease;overflow-y:auto}
+  #sidebar.open{left:0}
+  .mobile-overlay.show{display:block}
+  #main{height:auto;min-height:100vh;padding-top:60px}
+  .nav-item{padding:14px 16px;min-height:48px;font-size:15px}
+  .nav-icon{font-size:20px;margin-right:10px}
+  .welcome-banner{padding:16px;margin:0 8px}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:8px;padding:0 8px}
+  .quick-actions{flex-direction:column;padding:0 8px}
+  .action-card{margin-bottom:8px}
+  .section{padding:12px}
+  .section-header{padding:0 8px}
+  .video-area{aspect-ratio:16/9;min-height:200px}
+  .transcript-panel{padding:8px}
+  .wordlist-selector{flex-wrap:wrap}
+  .wordlist-btn{font-size:12px;padding:6px 10px}
+  .flashcard{min-height:200px}
+  .reading-para{font-size:15px;line-height:1.8}
+  .reading-view{padding:8px}
+  .config-modal{width:90%;max-width:400px;padding:20px}
+}
+
+/* === VIDEO VOCAB FILTER === */
+.video-vocab-filter{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.video-vocab-filter .vvf-btn{padding:5px 12px;border-radius:6px;font-size:11px;cursor:pointer;border:1.5px solid #E2E8F0;background:#fff;color:var(--gray);font-family:var(--font-body);transition:all .2s}
+.video-vocab-filter .vvf-btn.active{border-color:var(--pink);background:var(--pink-light);color:var(--pink);font-weight:600}
+.video-vocab-filter .vvf-btn:hover{border-color:var(--purple)}
+
+/* === CONTENT UPDATE BAR === */
+.content-update-bar{display:flex;align-items:center;gap:12px;padding:12px 20px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:20px}
+.content-update-bar .cub-label{font-size:13px;color:var(--gray)}
+.content-update-bar .cub-date{font-size:12px;color:var(--blue);font-weight:600}
+.content-update-bar button{padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-family:var(--font-body);font-size:12px;transition:all .2s}
+.cub-btn-refresh{background:var(--green);color:#fff}
+.cub-btn-refresh:hover{background:#22C55E}
+.cub-btn-config{background:#E2E8F0;color:var(--dark)}
+.cub-btn-config:hover{background:#CBD5E1}
+
+/* === CONFIG MODAL === */
+.config-modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:1000;align-items:center;justify-content:center}
+.config-modal-overlay.show{display:flex}
+.config-modal{background:#fff;border-radius:16px;padding:28px 32px;width:520px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+.config-modal h3{font-size:18px;margin-bottom:16px;color:var(--dark)}
+.config-modal label{font-size:13px;color:var(--gray);display:block;margin-bottom:4px;margin-top:12px}
+.config-modal textarea{width:100%;min-height:120px;border:2px solid #E2E8F0;border-radius:8px;padding:10px;font-family:monospace;font-size:12px;resize:vertical;outline:none}
+.config-modal textarea:focus{border-color:var(--pink)}
+.config-modal .cm-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+.config-modal .cm-btn{padding:8px 20px;border-radius:8px;border:none;cursor:pointer;font-family:var(--font-body);font-size:13px;transition:all .2s}
+.cm-btn-save{background:var(--pink);color:#fff}
+.cm-btn-save:hover{background:#E8527A}
+.cm-btn-cancel{background:#E2E8F0;color:var(--dark)}
+.cm-btn-cancel:hover{background:#CBD5E1}
+.config-modal .cm-hint{font-size:11px;color:var(--gray);margin-top:8px;line-height:1.5}
+
+</style>
+</head>
+<body>
+
+<noscript>
+<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;font-family:sans-serif">
+<div>
+<p style="font-size:48px">⚠️</p>
+<h2 style="color:#333">JavaScript 未启用</h2>
+<p style="color:#666;line-height:1.8">此学习网站需要 JavaScript 才能正常运行。<br>请在浏览器设置中启用 JavaScript，然后刷新页面。<br><br>
+<b>Chrome 浏览器：</b>设置 → 网站设置 → JavaScript → 允许<br>
+<b>如何打开：</b>长按此页面 → 选择"在Chrome中打开"</p>
+</div>
+</div>
+</noscript>
+<div id="jsErrorBox" style="display:none;position:fixed;top:0;left:0;width:100%;padding:12px;background:#FEE2E2;color:#991B1B;z-index:9999;font-family:monospace;font-size:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1)"></div>
+<script>
+window.onerror = function(msg, src, line, col, err) {
+  var box = document.getElementById('jsErrorBox');
+  if (box) { box.style.display = 'block'; box.textContent = 'JS Error (L' + line + '): ' + msg; }
+};
+</script>
+
+<button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+<div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+
+<nav id="sidebar">
+  <div class="logo"><h1>EnglishStar</h1><p>Kpop-Powered Learning</p></div>
+  <div class="nav-items">
+    <div class="nav-item active" onclick="navigateTo('home')"><span class="nav-icon">🏠</span><span>学习首页</span></div>
+    <div class="nav-item" onclick="navigateTo('video')"><span class="nav-icon">🎬</span><span>视频课程</span></div>
+    <div class="nav-item" onclick="navigateTo('reading')"><span class="nav-icon">📖</span><span>阅读材料</span></div>
+    <div class="nav-item" onclick="navigateTo('vocab')"><span class="nav-icon">📝</span><span>词汇中心</span></div>
+    <div class="nav-item" onclick="navigateTo('quiz')"><span class="nav-icon">🎯</span><span>测验闯关</span></div>
+  </div>
+  <div class="user-card">
+    <div class="avatar">🌟</div>
+    <div class="name">NMIXX粉丝学员</div>
+    <div class="level">⭐ Level 3 · 初二进阶</div>
+  </div>
+</nav>
+
+<div id="main">
+  <!-- HOME -->
+  <div class="section active" id="sec-home">
+    <div class="welcome-banner">
+      <h2>Welcome back! 今天也要加油哦 💪</h2>
+      <p>通过你最爱的NMIXX和TXT的英文访谈、综艺片段来学英语，轻松备战中考，为留学打好基础！</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-value" id="stat-words">0</div><div class="stat-label">已学单词</div></div>
+      <div class="stat-card"><div class="stat-icon">🎬</div><div class="stat-value" id="stat-lessons">0</div><div class="stat-label">完成课程</div></div>
+      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="stat-quizzes">0</div><div class="stat-label">测验完成</div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-value" id="stat-starred">0</div><div class="stat-label">收藏单词</div></div>
+    </div>
+    <div class="quick-actions">
+      <div class="action-card" onclick="navigateTo('video')"><div class="card-icon">🎤</div><h3>今日视频课</h3><p>观看Taylor Swift英语学习博主精选视频，学习真实英语表达</p></div>
+      <div class="action-card" onclick="navigateTo('vocab')"><div class="card-icon">🃏</div><h3>闪卡复习</h3><p>用翻转闪卡背诵核心词汇，中考高频词+Kpop场景词</p></div>
+      <div class="action-card" onclick="navigateTo('quiz')"><div class="card-icon">🏆</div><h3>词汇挑战</h3><p>选择、拼写、连线三种题型，检验你的词汇掌握程度</p></div>
+    </div>
+  </div>
+
+  <!-- VIDEO LIST -->
+  <div class="section" id="sec-video">
+    <div class="section-header"><h2>🎬 视频课程</h2><p>通过B站英语博主精选视频，学习Taylor Swift、美剧、电影中的真实英语表达</p></div>
+
+  <!-- CONTENT UPDATE BAR (in video section) -->
+  <div class="content-update-bar" id="contentUpdateBar" style="display:none">
+    <span style="font-size:18px">🔄</span>
+    <span class="cub-label">内容更新：</span>
+    <span class="cub-date" id="cubDate">--</span>
+    <button class="cub-btn-refresh" onclick="exportContentConfig()">📋 导出配置</button>
+    <button class="cub-btn-config" onclick="openConfigModal()">⚙️ 管理视频</button>
+  </div>
+
+  <!-- CONFIG MODAL -->
+  <div class="config-modal-overlay" id="configModal" onclick="if(event.target===this)closeConfigModal()">
+    <div class="config-modal">
+      <h3>⚙️ 内容管理</h3>
+      <label>视频BV号列表（每行一个，可加注释）：</label>
+      <textarea id="configBVList" placeholder="BV1LF4m1w7dk  # Taylor Swift 访谈&#10;BV1CR4y1t7M1  # NYU 演讲&#10;BV1nP411k7u8  # 新闻报道"></textarea>
+      <div class="cm-hint">
+        💡 使用方法：编辑BV号列表后点击"保存并导出"，将生成的配置文件发给QoderWork执行"更新英语学习网站内容"即可自动下载视频音频、AI转写并更新网站。
+      </div>
+      <label>自动更新间隔：</label>
+      <select id="configInterval" style="padding:6px 12px;border:2px solid #E2E8F0;border-radius:6px;font-size:13px;font-family:var(--font-body)">
+        <option value="0">手动更新</option>
+        <option value="7">每周</option>
+        <option value="30">每月</option>
+      </select>
+      <div class="cm-actions">
+        <button class="cm-btn cm-btn-cancel" onclick="closeConfigModal()">取消</button>
+        <button class="cm-btn cm-btn-save" onclick="saveAndExportConfig()">保存并导出</button>
+      </div>
+    </div>
+  </div>
+
+    <div id="videoListView"></div>
+  </div>
+
+  <!-- READING LIST -->
+  <div class="section" id="sec-reading">
+    <div class="section-header"><h2>📖 阅读材料</h2><p>点击文中高亮词汇即可查看翻译，轻松阅读有趣英文文章</p></div>
+    <div id="readingListView"></div>
+  </div>
+
+  <!-- VOCABULARY CENTER -->
+  <div class="section" id="sec-vocab">
+    <div class="section-header"><h2>📝 词汇中心</h2><p>视频字幕词汇 + 中考核心 + Kpop场景，用闪卡和词表高效记忆</p></div>
+    <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="vocabSearch" placeholder="搜索单词或中文意思..." oninput="searchVocab(this.value)"></div>
+    <div class="vocab-tabs">
+      <button class="vocab-tab active" onclick="switchVocabTab('list',this)">📋 词汇表</button>
+      <button class="vocab-tab" onclick="switchVocabTab('flash',this)">🃏 闪卡模式</button>
+    </div>
+    <div class="vocab-panel active" id="vocabListPanel">
+      <div class="wordlist-selector" id="wordlistSelector"></div>
+      <div id="wordlistContent"></div>
+    </div>
+    <div class="vocab-panel" id="vocabFlashPanel">
+      <div class="flashcard-area" id="flashcardArea"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section" id="sec-quiz">
+    <div class="section-header"><h2>🎯 测验闯关</h2><p>三种题型检验你的词汇掌握程度，加油！</p></div>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<div id="wordPopup">
+  <button class="wp-close" onclick="closePopup()">✕</button>
+  <span class="wp-star" id="wpStar" onclick="toggleStarPopup()">☆</span>
+  <div class="wp-word" id="wpWord"></div>
+  <div class="wp-phonetic" id="wpPhonetic"></div>
+  <span class="wp-pos" id="wpPos"></span>
+  <span class="wp-speak" onclick="speakWord()">🔊</span>
+  <div class="wp-meaning" id="wpMeaning"></div>
+  <div class="wp-example" id="wpExample"></div>
+</div>
+
+<script>
+/* ============================================================
+   DATA — 视频课程
+   ============================================================ */
+const videoLessons = [
+  {
+    id: 'ts-interview',
+    title: 'Taylor Swift · 真实访谈精选',
+    desc: '油管精选Taylor Swift多年访谈集锦，展示她如何用英语谈音乐创作和人生感悟。英文内容来自真实公开访谈。',
+    tag: '音乐英语',
+    duration: '17:00',
+    thumb: 'linear-gradient(135deg,#C084FC,#FF6B9D)',
+    emoji: '🎵',
+    youtubeId: '',
+    biliId: 'BV1LF4m1w7dk',
+    searchBili: 'https://search.bilibili.com/all?keyword=Taylor%20Swift%20%E5%AD%A6%E8%8B%B1%E8%AF%AD%20%E8%AE%BF%E8%B0%88',
+    transcript: [
+      { en: "First day we've been in the same room. Cheers, yeah. First moment. That's so weird.", zh: "这是我们第一次待在同一间房间里。干杯，是的。第一次见面。这太奇妙了。", vocab: { "weird": ["奇妙的/奇怪的", "adj."] } },
+      { en: "I think when lockdown happened, I just found myself completely listless and purposeless.", zh: "我觉得当封锁开始时，我发现自己完全无精打采、毫无目标。", vocab: { "lockdown": ["封锁/居家隔离", "n."], "listless": ["无精打采的", "adj."], "purposeless": ["毫无目标的", "adj."] } },
+      { en: "And that was in the first three days of it. And then I remembered when we met a year before.", zh: "那只是在封锁的前三天。然后我想起了我们一年前初次见面的时候。", vocab: { "remembered": ["想起", "v."] } },
+      { en: "I'd come to the National show, and afterward, you would come up and talk to me, and you were so nice.", zh: "我去看了The National的演出，之后你会过来和我聊天，你人特别好。", vocab: { "afterward": ["之后", "adv."] } },
+      { en: "I was like, how do you guys write songs? You were like, well, we all live in different places, so sometimes I'll just make tracks and send them around.", zh: "我就问，你们是怎么写歌的？你说，嗯，我们住在不同的地方，所以有时候我会制作音轨然后发给大家。", vocab: { "tracks": ["音轨/曲目", "n."] } },
+      { en: "I just kind of thought to myself, if there was ever an opportunity to work with someone that I was such a fan of, who could work like that, that would be so cool.", zh: "我就暗自想，如果有机会能和我如此崇拜的人合作，而且他们能这样工作，那简直太酷了。", vocab: { "opportunity": ["机会", "n."] } },
+      { en: "I feel like it's also one of the reasons why it resonates with me so much is because in the dismantling of all of our systems of life that we've known, in the pandemic, you're left with two options.", zh: "我觉得这也是它让我如此共鸣的原因之一，因为在疫情期间，我们所熟知的生活体系全部被打破，你只剩下两个选择。", vocab: { "resonates": ["产生共鸣", "v."], "dismantling": ["拆除/瓦解", "n."], "pandemic": ["大流行病", "n."], "options": ["选择", "n."] } },
+      { en: "You either cling to it and try to make it work, or just say, well, I guess I'm just going to chart a new path and kind of get a frontier mentality.", zh: "你要么紧抓不放、努力让它运转，要么就说，好吧，我猜我只能开辟一条新路，带着一种开拓者的心态。", vocab: { "cling to": ["紧抓不放", "phrase"], "chart": ["开辟/规划", "v."], "frontier": ["前沿/开拓", "n."], "mentality": ["心态", "n."] } },
+      { en: "I think it was just a thrilling use of quarantine to say, well, everything's a blur, so I'm just going to rewrite it.", zh: "我觉得这是对隔离期的一次激动人心的利用——既然一切都模糊不清，那我就重新书写。", vocab: { "thrilling": ["令人激动的", "adj."], "quarantine": ["隔离", "n."], "blur": ["模糊", "n."], "rewrite": ["重写", "v."] } }
+    ],
+    coreVocab: ["weird", "lockdown", "listless", "purposeless", "remembered", "afterward", "tracks", "opportunity", "resonates", "dismantling", "pandemic", "options", "cling to", "chart", "frontier", "mentality", "thrilling", "quarantine", "blur", "rewrite"]
+  },
+  {
+    id: 'ts-nyu',
+    title: 'Taylor Swift · NYU毕业演讲',
+    desc: 'Taylor Swift 2022年纽约大学毕业典礼演讲，分享人生建议和成长感悟。英文内容来自NYU官方公开演讲原文。',
+    tag: '演讲',
+    duration: '40:00',
+    thumb: 'linear-gradient(135deg,#60A5FA,#C084FC)',
+    emoji: '🎓',
+    youtubeId: '',
+    biliId: 'BV1CR4y1t7M1',
+    searchBili: 'https://search.bilibili.com/all?keyword=Taylor%20Swift%20NYU%20%E6%AF%95%E4%B8%9A%E6%BC%94%E8%AE%B2%20%E8%8B%B1%E6%96%87%E5%AD%97%E5%B9%95',
+    transcript: [
+      { en: "I came here, I think about five years ago. I was 16 and just about to release my first single, Tim McGraw.", zh: "我大概五年前来过这里。那时我16岁，正要发行我的第一首单曲Tim McGraw。", vocab: { "release": ["发行", "v."], "single": ["单曲", "n."] } },
+      { en: "We were traveling up the West Coast in a rental car as tourists. I was doing my homework in the back seat. I was homeschooled in 10th grade.", zh: "我们当时开着租来的车沿西海岸旅行。我在后座写作业。我十年级的时候算是家庭教育。", vocab: { "rental car": ["租车", "n."], "homeschooled": ["在家教育", "adj."] } },
+      { en: "I think we've all seen the effects of social media and how that can connect people.", zh: "我想我们都看到了社交媒体的影响以及它如何连接人们。", vocab: { "effects": ["影响", "n."], "connect": ["连接", "v."] } },
+      { en: "Everybody's making video blogs and makeup tutorials. Everybody is catching on to communicating by making videos.", zh: "每个人都在制作视频博客、化妆教程。每个人都在通过制作视频来学习沟通。", vocab: { "tutorials": ["教程", "n."], "catching on": ["跟上潮流/学会", "phrase"] } },
+      { en: "Which comes first for you as a songwriter, the music or the lyrics?", zh: "作为词曲作者，你先写音乐还是先写歌词？", vocab: { "lyrics": ["歌词", "n."] } },
+      { en: "I think for me, it more comes as a general idea. My favorite thing about songwriting is that it's so spontaneous and unpredictable.", zh: "对我来说，它更多是以一个整体想法出现的。我最喜欢写歌的一点是它如此自发和不可预测。", vocab: { "spontaneous": ["自发的", "adj."], "unpredictable": ["不可预测的", "adj."] } },
+      { en: "When I wrote Love Story, I wrote it sitting on my bedroom floor because I liked a guy and my parents didn't want me to date him.", zh: "当我写Love Story这首歌时，我坐在卧室地板上写，因为我喜欢一个男生而我父母不想让我和他约会。", vocab: { "date": ["约会", "v."] } },
+      { en: "It just popped into my head. You were Romeo, you were throwing pebbles, and my daddy said, stay away from Juliet.", zh: "它就突然冒出来了。你是罗密欧，你在扔小石子，而我爸爸说，离朱丽叶远点。", vocab: { "popped into": ["突然想到", "phrase"], "pebbles": ["小石子", "n."] } },
+      { en: "It's crazy how the fastest songs I write end up being my favorites. The ones that just happen in a surge of inspiration.", zh: "不可思议的是，我写得最快的歌最终成了我最喜欢的。那些在灵感涌来时就完成的歌。", vocab: { "surge": ["涌来/涌现", "n."], "inspiration": ["灵感", "n."] } },
+      { en: "I never really switch the writing switch off. It's always on. To make an album I'm proud enough of, it has to be two to two and a half years of writing.", zh: "我从来没有真正关掉写作的开关。它始终开着。要做出一张我足够骄傲的专辑，需要两到两年半的创作时间。", vocab: { "switch off": ["关掉", "phrase"], "proud": ["骄傲的", "adj."] } },
+      { en: "I'll write like 40 to 50 songs and then 13 or 14 make it. That's a lot of paring down to make sure you're getting the best stuff.", zh: "我会写40到50首歌，然后只有13或14首入选。这需要大量筛选，确保留下最好的作品。", vocab: { "paring down": ["精简/筛选", "phrase"] } },
+      { en: "I've written songs in airport bathrooms on paper towels. In the bus bunk, you wake up in the middle of the night with this idea.", zh: "我在机场洗手间里用纸巾写过歌。在巴士卧铺里，半夜醒来有了灵感。", vocab: { "paper towels": ["纸巾", "n."], "bunk": ["卧铺", "n."] } },
+      { en: "I get awakened by song ideas all the time. I wake up and I'm like, oh great, because I know I won't remember it in the morning.", zh: "我总是被歌曲灵感唤醒。醒来就想，哦太好了，因为我知道早上就记不住了。", vocab: { "awakened": ["被唤醒", "v."] } },
+      { en: "I love it when a song is a story and the story develops. My favorite stories have really beautiful characters.", zh: "我喜欢一首歌是一个故事并且有发展的感觉。我最喜欢的故事有非常美丽的角色。", vocab: { "develops": ["发展", "v."], "characters": ["角色", "n."] } },
+      { en: "Beauty is sincerity. There are so many different ways that someone can be beautiful.", zh: "美就是真诚。一个人可以有很多种不同的美丽方式。", vocab: { "sincerity": ["真诚", "n."] } },
+      { en: "Someone's so funny that it makes them beautiful no matter how they look, because they're sincere in it.", zh: "有人非常有趣，这让他们无论外表如何都很美，因为他们是真诚的。", vocab: { "sincere": ["真诚的", "adj."] } }
+    ],
+    coreVocab: ["release", "single", "rental car", "homeschooled", "effects", "connect", "tutorials", "catching on", "lyrics", "spontaneous", "unpredictable", "date", "popped into", "pebbles", "surge", "inspiration", "switch off", "proud", "paring down", "paper towels", "bunk", "awakened", "develops", "characters", "sincerity", "sincere"]
+  },
+  {
+    id: 'ts-talkshow',
+    title: 'Taylor Swift · 美国脱口秀采访',
+    desc: '精选Taylor Swift在Jimmy Fallon、Graham Norton等脱口秀中的英文采访片段，学习自然英语对话和口语表达。',
+    tag: '访谈',
+    duration: '10:00',
+    thumb: 'linear-gradient(135deg,#FF6B9D,#FBBF24)',
+    emoji: '🎙️',
+    youtubeId: '',
+    biliId: 'BV1nP411k7u8',
+    searchBili: 'https://search.bilibili.com/all?keyword=Taylor%20Swift%20Jimmy%20Fallon%20%E9%87%87%E8%AE%BF%20%E8%8B%B1%E6%96%87%E5%AD%97%E5%B9%95',
+    transcript: [
+      { en: "Seeing the Eras Tour live is a dream for so many Swifties around the world, but it's hard to do just that as Ticketmaster's troubles selling Taylor Swift tickets have now also emerged abroad in Europe.", zh: "亲临现场观看时代巡回演唱会是全球无数Swifties的梦想，但Ticketmaster的售票问题如今也蔓延到了欧洲。", vocab: { "Eras Tour": ["时代巡回演唱会", "n."], "Swifties": ["泰勒粉丝名", "n."], "emerged": ["出现/浮现", "v."], "abroad": ["在国外", "adv."] } },
+      { en: "On Tuesday, the company paused sales to Swift's six shows in Paris and Lyon, France next year.", zh: "周二，该公司暂停了明年在法国巴黎和里昂的六场演出的门票销售。", vocab: { "paused": ["暂停", "v."], "sales": ["销售", "n."] } },
+      { en: "Ticketmaster says an issue with a third-party provider is to blame, adding as soon as we saw fans experiencing issues, queues were paused.", zh: "Ticketmaster表示问题归咎于第三方供应商，并补充说一旦发现粉丝遇到问题，排队就被暂停了。", vocab: { "third-party": ["第三方的", "adj."], "provider": ["供应商", "n."], "to blame": ["应负责任", "phrase"], "queues": ["排队", "n."] } },
+      { en: "All codes not used to purchase tickets will remain valid.", zh: "所有未用于购票的验证码将继续有效。", vocab: { "purchase": ["购买", "v."], "remain": ["保持", "v."], "valid": ["有效的", "adj."] } },
+      { en: "This dilemma is hard to shake off for Swifties that watched the Eras Tour Ticketmaster meltdown unfold in the U.S. last fall.", zh: "对于去年秋天目睹了时代巡演Ticketmaster崩溃事件的Swifties来说，这个困境难以摆脱。", vocab: { "dilemma": ["困境", "n."], "shake off": ["摆脱", "phrase"], "meltdown": ["崩溃/瓦解", "n."], "unfold": ["展开", "v."] } },
+      { en: "Last November, Ticketmaster ultimately canceled the general sale for Swift's United States Tour.", zh: "去年十一月，Ticketmaster最终取消了Swift美国巡演的公开销售。", vocab: { "ultimately": ["最终", "adv."], "canceled": ["取消", "v."], "general sale": ["公开销售", "n."] } },
+      { en: "After a massive pre-sale rush and bot attacks caused the site to glitch, some fans waited for hours in virtual queues.", zh: "大规模预售抢购和机器人攻击导致网站故障后，一些粉丝在虚拟排队中等了几个小时。", vocab: { "massive": ["大规模的", "adj."], "pre-sale": ["预售", "n."], "bot attacks": ["机器人攻击", "n."], "glitch": ["故障", "v."], "virtual": ["虚拟的", "adj."] } },
+      { en: "Ticketmaster's technical issues and control of the market even took center stage at a Senate hearing earlier this year.", zh: "Ticketmaster的技术问题和市场控制力甚至在今年早些时候成为了参议院听证会的焦点。", vocab: { "technical": ["技术的", "adj."], "center stage": ["焦点/中心", "phrase"], "Senate": ["参议院", "n."], "hearing": ["听证会", "n."] } },
+      { en: "We apologize to the fans. We apologize to Ms. Swift. We need to do better.", zh: "我们向粉丝道歉。我们向Swift女士道歉。我们需要做得更好。", vocab: { "apologize": ["道歉", "v."] } },
+      { en: "For now, Swifties are staying hopeful, saying they'll be enchanted if they can just land a ticket.", zh: "目前，Swifties仍保持希望，说如果能够获得一张票，他们将欣喜若狂。", vocab: { "hopeful": ["充满希望的", "adj."], "enchanted": ["着迷的/欣喜的", "adj."], "land a ticket": ["获得一张票", "phrase"] } }
+    ],
+    coreVocab: ["Eras Tour", "Swifties", "emerged", "abroad", "paused", "sales", "third-party", "provider", "to blame", "queues", "purchase", "remain", "valid", "dilemma", "shake off", "meltdown", "unfold", "ultimately", "canceled", "general sale", "massive", "pre-sale", "bot attacks", "glitch", "virtual", "technical", "center stage", "Senate", "hearing", "apologize", "hopeful", "enchanted", "land a ticket"]
+  },
+  {
+    id: 'young-sheldon-daily',
+    title: 'Young Sheldon · 谢尔顿的日常',
+    desc: 'B站英语博主精选《小谢尔顿》片段，配有英语学习笔记。英文内容来自剧集真实对白。',
+    tag: '美剧英语',
+    duration: '12:00',
+    thumb: 'linear-gradient(135deg,#60A5FA,#4ADE80)',
+    emoji: '🧠',
+    youtubeId: '',
+    biliId: 'BV1AE41147ed',
+    searchBili: 'https://search.bilibili.com/all?keyword=%E5%B0%91%E5%B9%B4%E8%B0%A2%E8%80%B3%E6%9C%B5%20Young%20Sheldon%20%E8%8B%B1%E8%AF%AD%E5%AD%A6%E4%B9%A0',
+    transcript: [
+      { en: "I've always loved trains. In fact, if my career in theoretical physics hadn't worked out, my backup plan was to become a professional ticket taker or hobo.", zh: "我一直很喜欢火车。事实上，如果我的理论物理事业没有成功，我的备选计划是成为一名职业检票员或流浪汉。", vocab: { "theoretical physics": ["理论物理", "n."], "backup plan": ["备选计划", "n."], "hobo": ["流浪汉", "n."] } },
+      { en: "When I figured out that trains allowed me to prove Newton's first law, I felt like Neil Armstrong on the moon.", zh: "当我发现火车让我能验证牛顿第一定律时，我感觉自己像月球上的阿姆斯特朗。", vocab: { "figured out": ["发现/弄明白", "phrase"], "Newton's first law": ["牛顿第一定律", "n."] } },
+      { en: "I don't care how dim-witted you are, scientific principles have to make you smile.", zh: "不管你有多迟钝，科学原理都应该能让你微笑。", vocab: { "dim-witted": ["迟钝的", "adj."], "scientific": ["科学的", "adj."], "principles": ["原理", "n."] } },
+      { en: "It was family dinners like this that led me to adopt a mid-Atlantic accent.", zh: "正是这样的家庭晚餐让我学会了使用大西洋中部口音。", vocab: { "adopt": ["采用", "v."] } },
+      { en: "Are you excited to start school on Monday? How can I be excited when he's going to be in the same grade as me?", zh: "你周一开学兴奋吗？当他要和我在同一个年级时，我怎么能兴奋？", vocab: { "excited": ["兴奋的", "adj."], "grade": ["年级", "n."] } },
+      { en: "Don't worry, Georgie. I'm not planning on being in the ninth grade for very long.", zh: "别担心，Georgie。我不打算在九年级待太久。", vocab: { "planning on": ["计划/打算", "phrase"] } },
+      { en: "High school's a haven for higher learning.", zh: "高中是高等学习的殿堂。", vocab: { "haven": ["避风港/殿堂", "n."] } },
+      { en: "Thank you, God, for this food we're about to receive and for the nourishment of our bodies and bless the hands that prepared it. Amen.", zh: "感谢上帝赐予我们即将享用的食物，滋养我们的身体，并祝福准备这顿饭的人。阿门。", vocab: { "receive": ["接受", "v."], "nourishment": ["滋养/营养", "n."], "bless": ["祝福", "v."] } },
+      { en: "Jane Goodall had to go to Africa to study apes. I just had to go to dinner.", zh: "Jane Goodall得去非洲研究猿类。我只需要来吃顿晚饭就行了。", vocab: { "apes": ["猿类", "n."] } }
+    ],
+    coreVocab: ["theoretical physics", "backup plan", "hobo", "figured out", "Newton's first law", "dim-witted", "scientific", "principles", "adopt", "excited", "grade", "planning on", "haven", "receive", "nourishment", "bless", "apes"]
+  },
+  {
+    id: 'young-sheldon-family',
+    title: 'Young Sheldon · 家庭对话',
+    desc: 'B站UP主精选《小谢尔顿》家庭场景片段，纯英字幕，学习美国家庭日常英语对话。',
+    tag: '美剧英语',
+    duration: '42:00',
+    thumb: 'linear-gradient(135deg,#4ADE80,#60A5FA)',
+    emoji: '👨‍👩‍👧‍👦',
+    youtubeId: '',
+    biliId: 'BV1kjqaBHEi7',
+    searchBili: 'https://search.bilibili.com/all?keyword=%E5%B0%8F%E8%B0%A2%E5%B0%94%E9%A1%BF%20%E7%BA%AF%E8%8B%B1%E5%AD%97%E5%B9%95%20%E5%AD%A6%E8%8B%B1%E8%AF%AD',
+    transcript: [
+      { en: "Do you really think the back room needs all these security cameras?", zh: "你真的觉得后屋需要这么多监控摄像头吗？", vocab: { "security cameras": ["监控摄像头", "n."] } },
+      { en: "We're not going to get robbed again. How do you know? I've taken precautions.", zh: "我们不会再被抢了。你怎么知道？我已经采取了预防措施。", vocab: { "robbed": ["被抢劫", "v."], "precautions": ["预防措施", "n."] } },
+      { en: "I found an engagement ring. Oh, let me see it. Well, I don't have it yet. It's a little expensive.", zh: "我找到了一枚订婚戒指。哦，让我看看。嗯，我还没买。有点贵。", vocab: { "engagement ring": ["订婚戒指", "n."], "expensive": ["昂贵的", "adj."] } },
+      { en: "As a man who has been through a divorce, let me give you some advice. Do not spend a lot of money on a ring.", zh: "作为一个经历过离婚的人，让我给你一些建议。不要花太多钱买戒指。", vocab: { "divorce": ["离婚", "n."], "advice": ["建议", "n."] } },
+      { en: "I was hoping to get an advance on my pay. How much you need? Next month. And the month after that.", zh: "我希望能预支工资。你需要多少？下个月的。还有下下个月的。", vocab: { "advance": ["预支", "n."] } },
+      { en: "I know we're already engaged, but I wanted you to have this. Oh, George, it's beautiful.", zh: "我知道我们已经订婚了，但我想让你拥有这个。哦，George，太美了。", vocab: { "engaged": ["订婚的", "adj."] } },
+      { en: "Thank you for asking me to marry you. You're welcome. When we tell people this story, can we leave that part out?", zh: "谢谢你向我求婚。不客气。当我们告诉别人这个故事时，能把那部分省略掉吗？", vocab: { "leave out": ["省略/去掉", "phrase"] } },
+      { en: "OK, we got diapers, wipes, change of clothes, bottles, bibs. We're set on food.", zh: "好了，我们有尿布、湿巾、换洗衣服、奶瓶、围嘴。食物也准备好了。", vocab: { "diapers": ["尿布", "n."], "wipes": ["湿巾", "n."], "bibs": ["围嘴", "n."] } },
+      { en: "There's a celebrity on the plane. Dr. Robert Oppenheimer. He's the Oppenheimer of physics.", zh: "飞机上有个名人。Robert Oppenheimer博士。他是物理学界的奥本海默。", vocab: { "celebrity": ["名人", "n."] } },
+      { en: "Look at him sitting in coach like a regular Joe. I'm going to go introduce myself. The seat belt sign is on.", zh: "看他像普通人一样坐在经济舱。我要去自我介绍。安全带指示灯亮着呢。", vocab: { "coach": ["经济舱", "n."], "regular Joe": ["普通人", "phrase"], "introduce": ["介绍", "v."] } }
+    ],
+    coreVocab: ["security cameras", "robbed", "precautions", "engagement ring", "expensive", "divorce", "advice", "advance", "engaged", "leave out", "diapers", "wipes", "bibs", "celebrity", "coach", "regular Joe", "introduce"]
+  },
+  {
+    id: 'celebrity-english',
+    title: '跟着明星学英语',
+    desc: '跟着K-pop偶像和欧美明星学英语，BTS、BLACKPINK、Taylor Swift等多位明星的英文采访片段。',
+    tag: '明星英语',
+    duration: '30:00',
+    thumb: 'linear-gradient(135deg,#FF6B9D,#C084FC)',
+    emoji: '⭐',
+    youtubeId: '',
+    biliId: 'BV1d5411p7Z7',
+    searchBili: 'https://search.bilibili.com/all?keyword=%E8%B7%9F%E7%9D%80%E6%98%8E%E6%98%9F%E5%AD%A6%E8%8B%B1%E8%AF%AD%20BTS%20Taylor%20Swift',
+    transcript: [
+      { en: "Dear Excellencies, friends and colleagues, in my role as UNICEF Special Advocate for Education, I've seen for myself that education is a key factor in building happy, confident and resilient children.", zh: "尊敬的各位阁下、朋友们和同事们，作为联合国儿童基金会教育特别倡导者，我亲眼看到教育是培养快乐、自信和坚韧儿童的关键因素。", vocab: { "Excellencies": ["阁下（敬称）", "n."], "UNICEF": ["联合国儿童基金会", "n."], "resilient": ["坚韧的", "adj."] } },
+      { en: "I visited child-friendly schools in Sanjiang County last year, where children are encouraged to work together to create solutions to problems.", zh: "去年我参观了三江县的儿童友好学校，孩子们被鼓励一起合作创造解决问题的方案。", vocab: { "child-friendly": ["儿童友好的", "adj."], "solutions": ["解决方案", "n."] } },
+      { en: "It's an important life skill which will set them up for success in the future.", zh: "这是一项重要的生活技能，将为他们未来的成功奠定基础。", vocab: { "life skill": ["生活技能", "n."], "set up": ["奠定基础", "phrase"] } },
+      { en: "However, not all children can access this type of education, and it saddens me that there is still massive inequality in the world today.", zh: "然而，并非所有儿童都能获得这种教育，当今世界仍然存在严重的不平等，这让我感到难过。", vocab: { "access": ["获得", "v."], "saddens": ["使难过", "v."], "inequality": ["不平等", "n."] } },
+      { en: "I plan to join another mission with UNICEF to meet children in some of the poorest areas, where there is a need for a more child-friendly approach to learning.", zh: "我计划与UNICEF一起参加另一次任务，去见在最贫困地区上学的孩子们，那里需要更加儿童友好的学习方式。", vocab: { "mission": ["任务/使命", "n."], "approach": ["方法/途径", "n."] } },
+      { en: "I aim to raise awareness of the very real need to invest in improving the quality of education.", zh: "我旨在提高人们对投资改善教育质量这一切实需求的认识。", vocab: { "awareness": ["意识/认识", "n."], "invest": ["投资", "v."], "leverage": ["争取/撬动", "v."] } },
+      { en: "This year I'm going to support UNICEF to bring the SDGs to life for children and young people through the creative use of multimedia.", zh: "今年我将支持UNICEF，通过创意多媒体让儿童和年轻人了解可持续发展目标。", vocab: { "SDGs": ["可持续发展目标", "n."], "multimedia": ["多媒体", "n."] } },
+      { en: "This will empower young people to understand what the SDGs are and why they are so important for their future.", zh: "这将使年轻人能够了解可持续发展目标是什么，以及为什么它们对未来如此重要。", vocab: { "empower": ["赋能/使能够", "v."] } },
+      { en: "As a young artist and student, I'm lucky to have a large following on Chinese social media. I have over 35 million followers.", zh: "作为一名年轻的艺术家和学生，我很幸运在中国社交媒体上拥有大量粉丝。我有超过3500万粉丝。", vocab: { "following": ["粉丝群", "n."], "followers": ["粉丝", "n."] } },
+      { en: "I see it as my duty to use this following for good. I hope my posts can reach millions to inspire progress towards universal quality education.", zh: "我认为利用这些影响力做好事是我的责任。我希望我的帖子能触及数百万人，激励人们朝着普及优质教育的目标前进。", vocab: { "duty": ["责任", "n."], "inspire": ["激励", "v."] } },
+      { en: "I will also play a leading role in my own social good project, providing direct assistance to improve the well-being of vulnerable children and the elderly.", zh: "我还将在自己的社会公益项目中发挥主导作用，为改善弱势儿童和老年人的福祉提供直接帮助。", vocab: { "well-being": ["福祉/幸福", "n."], "vulnerable": ["弱势的", "adj."] } },
+      { en: "I hope with my voice and action, I can motivate more youth to contribute their talent and creativity in making a difference.", zh: "我希望通过我的声音和行动，能激励更多年轻人贡献他们的才华和创造力，为社区带来改变。", vocab: { "motivate": ["激励", "v."], "contribute": ["贡献", "v."], "creativity": ["创造力", "n."] } }
+    ],
+    coreVocab: ["Excellencies", "UNICEF", "resilient", "child-friendly", "solutions", "life skill", "set up", "access", "saddens", "inequality", "mission", "approach", "awareness", "invest", "leverage", "SDGs", "multimedia", "empower", "following", "followers", "duty", "inspire", "well-being", "vulnerable", "motivate", "contribute", "creativity"]
+  },
+  {
+    id: 'movie-english',
+    title: '穿普拉达的女王 · 影子跟读',
+    desc: 'B站英语博主精选电影片段，困难单词注释+影子跟读练习。英文内容来自电影原版对白。',
+    tag: '电影英语',
+    duration: '15:00',
+    thumb: 'linear-gradient(135deg,#F87171,#FBBF24)',
+    emoji: '👠',
+    youtubeId: '',
+    biliId: 'BV1P59mY7Eio',
+    searchBili: 'https://search.bilibili.com/all?keyword=%E7%A9%BF%E6%99%AE%E6%8B%89%E8%BE%BE%E7%9A%84%E5%A5%B3%E7%8E%8B%20%E5%AD%A6%E8%8B%B1%E8%AF%AD%20%E8%8B%B1%E6%96%87%E5%AD%97%E5%B9%95',
+    transcript: [
+      { en: "Emily Charlton. Andrea Sachs? Yes? Great. Human resources certainly has no sense of humour. Follow me.", zh: "Emily Charlton。Andrea Sachs？是的？太好了。人力资源部确实没什么幽默感。跟我来。", vocab: { "human resources": ["人力资源部", "n."] } },
+      { en: "I was Miranda's second assistant, but the first assistant recently got promoted, and so now I'm the first.", zh: "我本来是Miranda的第二助理，但第一助理最近升职了，所以现在我成了第一助理。", vocab: { "assistant": ["助理", "n."], "promoted": ["被提拔/升职", "v."] } },
+      { en: "Miranda's gone through the last two girls after only a few weeks. We need to find someone who can survive here.", zh: "Miranda之前的两个助理只干了几周就走了。我们需要找一个能在这里生存下去的人。", vocab: { "survive": ["生存", "v."] } },
+      { en: "She's the editor-in-chief of Runway, not to mention a legend. You work a year for her and you can get a job at any magazine you want.", zh: "她是Runway杂志的主编，更不用说还是个传奇人物。你为她工作一年后就能在任何想要的杂志社找到工作。", vocab: { "editor-in-chief": ["主编", "n."], "legend": ["传奇", "n."] } },
+      { en: "Million girls would kill for this job. It sounds like a great opportunity. I'd love to be considered.", zh: "百万女孩会为了这份工作拼命。这听起来是个很好的机会。我很乐意被考虑。", vocab: { "would kill for": ["拼命想要", "phrase"], "considered": ["被考虑", "v."] } },
+      { en: "Runway is a fashion magazine, so an interest in fashion is crucial.", zh: "Runway是一本时尚杂志，所以对时尚感兴趣至关重要。", vocab: { "fashion": ["时尚", "n."], "crucial": ["至关重要的", "adj."] } },
+      { en: "She's on her way. Tell everyone. She's not supposed to be here until tonight.", zh: "她正在来的路上。告诉所有人。她今晚之前不应该到这儿的。", vocab: { "supposed to": ["应该", "phrase"] } },
+      { en: "Details of your incompetence do not interest me.", zh: "你无能的细节我不感兴趣。", vocab: { "incompetence": ["无能", "n."] } },
+      { en: "I asked for clean, athletic, smiley. Send me dirty, tired and punchy.", zh: "我要的是干净、运动型、阳光的。给我送来的是脏兮兮、笮惫不堪的。", vocab: { "athletic": ["运动型的", "adj."] } },
+      { en: "I was pre-interviewing her for you, but she's hopeless and totally wrong for you.", zh: "我在为你做初步面试，但她完全不行，根本不适合你。", vocab: { "hopeless": ["没希望的", "adj."] } },
+      { en: "The last two you sent me were completely inadequate, so I'll have to do it myself.", zh: "你上次给我送来的两个完全不合格，所以我得自己来做这件事。", vocab: { "inadequate": ["不合格的/不够的", "adj."] } },
+      { en: "That's all. You may go back to your desks now.", zh: "就这些。你们现在可以回座位了。", vocab: {  } }
+    ],
+    coreVocab: ["human resources", "assistant", "promoted", "survive", "editor-in-chief", "legend", "would kill for", "considered", "fashion", "crucial", "supposed to", "incompetence", "athletic", "hopeless", "inadequate"]
+  }
+];
+
+/* ============================================================
+   DATA — 阅读材料
+   ============================================================ */
+/* ---- Reading articles word-by-word dictionary ---- */
+const readingVocabDict = {
+  'across': ['跨越','prep.'], 'actually': ['实际上','adv.'],
+  'activities': ['活动','n.'], 'agencies': ['经纪公司','n.'],
+  'album': ['专辑','n.'], 'amazing': ['令人惊叹的','adj.'],
+  'american': ['美国的','adj.'], 'applications': ['申请','n.'],
+  'artists': ['艺人','n.'], 'attract': ['吸引','v.'],
+  'audiences': ['受众','n.'], 'backpack': ['书包','n.'],
+  'based': ['基于','v.'], 'become': ['成为','v.'],
+  'beyond': ['超越','prep.'], 'blackpink': ['BLACKPINK','n.'],
+  'boosted': ['推动了','v.'], 'bts': ['BTS','n.'],
+  'build': ['建立','v.'], 'cafeteria': ['食堂','n.'],
+  'chat': ['闲聊','v.'], 'choices': ['选择','n.'],
+  'choose': ['选择','v.'], 'choreography': ['编舞','n.'],
+  'classes': ['课程','n.'], 'clips': ['片段','n.'],
+  'club': ['社团','n.'], 'college': ['大学','n.'],
+  'combines': ['融合','v.'], 'communicate': ['交流','v.'],
+  'computer': ['计算机','n.'], 'concerts': ['演唱会','n.'],
+  'confidence': ['信心','n.'], 'connected': ['有联系的','adj.'],
+  'constantly': ['不断地','adv.'], 'content': ['内容','n.'],
+  'core': ['核心','adj.'], 'countries': ['国家','n.'],
+  'creating': ['创造','v.'], 'critics': ['评论家','n.'],
+  'dance': ['舞蹈','n.'], 'dances': ['舞会','n.'],
+  'dancing': ['跳舞','n.'], 'debate': ['辩论','n.'],
+  'debuted': ['出道','v.'], 'debuting': ['出道','v.'],
+  'develop': ['培养','v.'], 'drama': ['戏剧','n.'],
+  'earned': ['赢得','v.'], 'electives': ['选修课','n.'],
+  'engaged': ['有参与感的','adj.'], 'enjoy': ['享受','v.'],
+  'enjoying': ['享受','v.'], 'entertainment': ['娱乐公司','n.'],
+  'evening': ['晚上','n.'], 'events': ['活动','n.'],
+  'expressions': ['表达方式','n.'], 'extracurricular': ['课外的','adj.'],
+  'fanbase': ['粉丝群','n.'], 'fans': ['粉丝','n.'],
+  'fashion': ['时尚','n.'], 'favorite': ['最喜欢的','adj.'],
+  'february': ['二月','n.'], 'footage': ['素材/片段','n.'],
+  'football': ['橄榄球','n.'], 'foreign': ['外国的','adj.'],
+  'formed': ['组建','v.'], 'friends': ['朋友','n.'],
+  'friendships': ['友谊','n.'], 'gain': ['获得','v.'],
+  'games': ['比赛','n.'], 'genres': ['类型','n.'],
+  'girl': ['女子','n.'], 'global': ['全球的','adj.'],
+  'goal': ['目标','n.'], 'goes': ['发展/走向','v.'],
+  'government': ['政府','n.'], 'grabbing': ['抓起','v.'],
+  'group': ['组合','n.'], 'groups': ['组合','n.'],
+  'hang': ['闲逛(hang out)','v.'], 'heading': ['前往','v.'],
+  'helped': ['帮助','v.'], 'history': ['历史','n.'],
+  'homework': ['家庭作业','n.'], 'hours': ['小时','n.'],
+  'idols': ['偶像','n.'], 'imagine': ['想象','v.'],
+  'important': ['重要的','adj.'], 'impressive': ['令人印象深刻的','adj.'],
+  'improve': ['提高','v.'], 'include': ['包括','v.'],
+  'including': ['包括','prep.'], 'influence': ['影响力','n.'],
+  'interests': ['兴趣爱好','n.'], 'international': ['国际的','adj.'],
+  'interviews': ['采访','n.'], 'join': ['参加','v.'],
+  'jyp': ['JYP','n.'], 'keeps': ['保持','v.'],
+  'known': ['知名的','adj.'], 'korean': ['韩国的','adj.'],
+  'language': ['语言','n.'], 'languages': ['语言','n.'],
+  'lasting': ['持久的','adj.'], 'leadership': ['领导力','n.'],
+  'learn': ['学习','v.'], 'learners': ['学习者','n.'],
+  'learning': ['学习','n.'], 'listeners': ['听众','n.'],
+  'listening': ['听力','n.'], 'live': ['直播','adj.'],
+  'love': ['喜爱','v.'], 'lunch': ['午餐','n.'],
+  'lyrics': ['歌词','n.'], 'makes': ['使','v.'],
+  'mall': ['商场','n.'], 'marketing': ['营销','n.'],
+  'math': ['数学','n.'], 'media': ['媒体','n.'],
+  'members': ['成员','n.'], 'might': ['可能','v.'],
+  'millions': ['数百万','n.'], 'mix': ['融合','v.'],
+  'morning': ['早上','n.'], 'movies': ['电影','n.'],
+  'multiple': ['多种的','adj.'], 'musical': ['音乐的','adj.'],
+  'nmixx': ['NMIXX','n.'], 'packed': ['充满的','adj.'],
+  'perfect': ['完善','v.'], 'performed': ['演出','v.'],
+  'performances': ['表演','n.'], 'platforms': ['平台','n.'],
+  'pop': ['流行','n.'], 'popular': ['受欢迎的','adj.'],
+  'powerful': ['强有力的','adj.'], 'practice': ['练习','v.'],
+  'practiced': ['练习','v.'], 'praise': ['赞誉','n.'],
+  'precise': ['精准的','adj.'], 'prepare': ['准备','v.'],
+  'produced': ['培养/产出','v.'], 'pronunciation': ['发音','n.'],
+  'reach': ['触及','v.'], 'real': ['真实的','adj.'],
+  'relaxing': ['放松的','adj.'], 'release': ['发布','v.'],
+  'representing': ['代表','v.'], 'sat': ['SAT考试','n.'],
+  'science': ['科学','n.'], 'share': ['分享','v.'],
+  'shows': ['节目','n.'], 'simply': ['仅仅','adv.'],
+  'singing': ['歌唱','n.'], 'single': ['单曲','adj.'],
+  'six': ['六','num.'], 'skills': ['技巧','n.'],
+  'social': ['社交的','adj.'], 'sometimes': ['有时','adv.'],
+  'song': ['歌曲','n.'], 'songs': ['歌曲','n.'],
+  'south': ['南','adj.'], 'speak': ['说','v.'],
+  'speaking': ['口语','n.'], 'special': ['特别','adj.'],
+  'spend': ['度过','v.'], 'sports': ['运动','n.'],
+  'standardized': ['标准化的','adj.'], 'stands': ['代表','v.'],
+  'starts': ['开始','v.'], 'stories': ['故事','n.'],
+  'streams': ['直播','n.'], 'strengths': ['优势','n.'],
+  'strict': ['严格的','adj.'], 'strong': ['强大的','adj.'],
+  'students': ['学生','n.'], 'style': ['风格','n.'],
+  'styles': ['风格','n.'], 'subjects': ['科目','n.'],
+  'successful': ['成功的','adj.'], 'surprise': ['惊喜','v.'],
+  'system': ['系统','n.'], 'takes': ['花费','v.'],
+  'talented': ['有才华的','adj.'], 'team': ['队','n.'],
+  'teams': ['队伍','n.'], 'tests': ['考试','n.'],
+  'third': ['第三','adj.'], 'tiktok': ['TikTok','n.'],
+  'tool': ['工具','n.'], 'trade': ['交换','v.'],
+  'train': ['训练','v.'], 'training': ['训练','n.'],
+  'twists': ['转折','n.'], 'twitter': ['Twitter','n.'],
+  'typical': ['典型的','adj.'], 'unexpected': ['意想不到的','adj.'],
+  'unique': ['独特的','adj.'], 'usually': ['通常','adv.'],
+  'variety': ['综艺','n.'], 'videos': ['视频','n.'],
+  'vocabulary': ['词汇','n.'], 'vocals': ['声乐','n.'],
+  'waking': ['醒来','v.'], 'watching': ['观看','v.'],
+  'way': ['方式','n.'], 'weekends': ['周末','n.'],
+  'went': ['去(过去式)','v.'], 'within': ['在…之内','prep.'],
+  'world': ['世界','n.'], 'worldwide': ['全球范围','adv.'],
+  'years': ['年','n.'], 'young': ['年轻的','adj.'],
+  'youtube': ['YouTube','n.'], 'attend': ['参加','v.'],
+  'hang out': ['闲逛','phrase']
+};
+
+const readingArticles = [
+  {
+    id: 'kpop-global',
+    title: 'K-pop Goes Global',
+    subtitle: 'K-pop如何征服世界',
+    emoji: '🌍',
+    color: 'linear-gradient(135deg,#FF6B9D,#FBBF24)',
+    content: [
+      { text: "K-pop, short for Korean pop music, has become one of the most popular music genres in the world. Groups like BTS, BLACKPINK, and NMIXX have millions of fans across different countries.", zh: "K-pop，即韩国流行音乐的缩写，已成为世界上最受欢迎的音乐类型之一。BTS、BLACKPINK和NMIXX等组合在不同国家拥有数百万粉丝。", vocab: { genres: ['类型','n.'], across: ['跨越','prep.'] } },
+      { text: "What makes K-pop so special? First, the performances are amazing. K-pop idols train for years to perfect their singing and dancing skills. Their choreography is precise and powerful.", zh: "是什么让K-pop如此特别？首先，表演令人惊叹。K-pop偶像训练多年以完善他们的歌唱和舞蹈技巧。他们的编舞精准而有力。", vocab: { choreography: ['编舞','n.'], precise: ['精准的','adj.'] } },
+      { text: "Second, K-pop groups release content constantly. Fans can enjoy music videos, variety shows, live streams, and behind-the-scenes footage. This keeps fans engaged and connected.", zh: "其次，K-pop组合不断发布内容。粉丝可以欣赏MV、综艺节目、直播和幕后花絮。这使粉丝保持参与感和连接感。", vocab: { constantly: ['不断地','adv.'], variety: ['综艺','n.'], footage: ['素材/片段','n.'], engaged: ['有参与感的','adj.'] } },
+      { text: "Third, K-pop agencies are very good at marketing. They use social media platforms like YouTube, TikTok, and Twitter to reach global audiences. Many songs include English lyrics to attract international listeners.", zh: "第三，K-pop经纪公司非常擅长营销。他们使用YouTube、TikTok和Twitter等社交媒体平台来触及全球受众。许多歌曲包含英文歌词来吸引国际听众。", vocab: { agencies: ['经纪公司','n.'], platforms: ['平台','n.'], attract: ['吸引','v.'] } },
+      { text: "The influence of K-pop goes beyond music. It has boosted Korean fashion, food, and language learning worldwide. Many fans start learning Korean because of their favorite idols.", zh: "K-pop的影响力超越了音乐。它推动了韩国时尚、美食和语言学习在全球的发展。许多粉丝因为喜欢的偶像而开始学习韩语。", vocab: { beyond: ['超越','prep.'], boosted: ['推动了','v.'], worldwide: ['全球范围','adv.'] } },
+      { text: "For English learners, K-pop is actually a great tool. Many idols speak English in interviews and on variety shows. Watching these clips can help you improve your listening and vocabulary skills while enjoying your favorite content.", zh: "对于英语学习者来说，K-pop其实是一个很好的工具。许多偶像在采访和综艺中说英语。观看这些片段可以帮助你在享受喜欢的内容的同时提高听力和词汇能力。", vocab: { clips: ['片段','n.'] } }
+    ]
+  },
+  {
+    id: 'nmixx-story',
+    title: 'The Story of NMIXX',
+    subtitle: 'NMIXX的出道之路',
+    emoji: '💜',
+    color: 'linear-gradient(135deg,#C084FC,#60A5FA)',
+    content: [
+      { text: "NMIXX is a South Korean girl group formed by JYP Entertainment. The group debuted in February 2022 with their single album 'Ad Mare'. The name NMIXX stands for 'now' and 'mix', representing their goal to mix different musical styles.", zh: "NMIXX是由JYP娱乐公司打造的韩国女子组合。组合于2022年2月以单曲专辑《Ad Mare》出道。名字NMIXX代表\u201cnow\u201d和\u201cmix\u201d，象征她们融合不同音乐风格的目标。", vocab: { Entertainment: ['娱乐公司','n.'], debuted: ['出道','v.'], representing: ['代表','v.'] } },
+      { text: "Before debuting, the members went through years of training. They practiced vocals, dance, and even foreign languages. JYP Entertainment is known for its strict training system, which has produced many successful artists.", zh: "在出道之前，成员们经历了多年的训练。她们练习声乐、舞蹈，甚至外语。JYP娱乐以其严格的训练系统闻名，该系统培养了许多成功的艺人。", vocab: { vocals: ['声乐','n.'], strict: ['严格的','adj.'], produced: ['培养/产出','v.'] } },
+      { text: "NMIXX is known for their unique musical style called 'MIXXPOP'. This style combines different genres within a single song, creating unexpected twists that surprise listeners.", zh: "NMIXX以其独特的音乐风格'MIXXPOP'闻名。这种风格在一首歌中融合不同的类型，创造出令听众惊喜的意外转折。", vocab: { unique: ['独特的','adj.'], combines: ['融合','v.'], genres: ['类型','n.'], unexpected: ['意想不到的','adj.'], twists: ['转折','n.'] } },
+      { text: "The group has six talented members, each with their own strengths. Their powerful vocals and impressive dance skills have earned them praise from music critics and fans around the world.", zh: "组合有六位才华横溢的成员，每个人都有自己独特的优势。她们强有力的声乐和令人印象深刻的舞蹈技巧赢得了乐评人和全球粉丝的赞誉。", vocab: { talented: ['有才华的','adj.'], strengths: ['优势','n.'], impressive: ['令人印象深刻的','adj.'], earned: ['赢得','v.'], critics: ['评论家','n.'] } },
+      { text: "NMIXX has performed at many international events and concerts. Their ability to communicate with fans in multiple languages, including English, has helped them build a strong global fanbase.", zh: "NMIXX在许多国际活动和演唱会上演出过。她们用多种语言（包括英语）与粉丝交流的能力帮助她们建立了强大的全球粉丝群。", vocab: { concerts: ['演唱会','n.'], multiple: ['多种的','adj.'], global: ['全球的','adj.'], fanbase: ['粉丝群','n.'] } },
+      { text: "For young English learners who love NMIXX, watching their English interviews is a fun way to practice. You can learn real expressions, improve your pronunciation, and gain confidence in speaking.", zh: "对于喜爱NMIXX的年轻英语学习者来说，观看她们的英文采访是一种有趣的练习方式。你可以学到真实的表达方式，提高发音，并增强口语信心。", vocab: { expressions: ['表达方式','n.'], pronunciation: ['发音','n.'] } }
+    ]
+  },
+  {
+    id: 'us-school',
+    title: 'A Day in American High School',
+    subtitle: '美国高中的一天',
+    emoji: '🏫',
+    color: 'linear-gradient(135deg,#4ADE80,#60A5FA)',
+    content: [
+      { text: "Imagine waking up at 6:30 in the morning, grabbing your backpack, and heading to school. For American high school students, a typical day starts early and is packed with activities.", zh: "想象一下早上6:30起床，抓起书包，前往学校。对于美国高中生来说，典型的一天开始得很早，而且充满了各种活动。", vocab: { grabbing: ['抓起','v.'], heading: ['前往','v.'], typical: ['典型的','adj.'], packed: ['充满的','adj.'] } },
+      { text: "Classes usually begin around 8 AM. Students take core subjects like English, math, science, and history. But they also choose electives based on their interests — things like art, music, computer science, or foreign languages.", zh: "课程通常在早上8点左右开始。学生学习核心科目，如英语、数学、科学和历史。但他们也根据兴趣选择选修课——如艺术、音乐、计算机科学或外语。", vocab: { electives: ['选修课','n.'], interests: ['兴趣爱好','n.'] } },
+      { text: "Lunch is one of the most social parts of the day. Students sit with their friends in the cafeteria, chat about their morning classes, share stories, and sometimes trade food.", zh: "午餐是一天中最具社交性的时段之一。学生们和朋友们坐在食堂里，聊上午的课，分享故事，有时还交换食物。", vocab: { social: ['社交的','adj.'], cafeteria: ['食堂','n.'], chat: ['闲聊','v.'], trade: ['交换','v.'] } },
+      { text: "After school, most students join extracurricular activities. Popular choices include sports teams, drama club, debate team, and student government. These activities help students develop leadership skills and make lasting friendships.", zh: "放学后，大多数学生参加课外活动。热门选择包括运动队、戏剧社、辩论队和学生政府。这些活动帮助学生培养领导能力并建立持久的友谊。", vocab: { extracurricular: ['课外的','adj.'], drama: ['戏剧','n.'], debate: ['辩论','n.'], leadership: ['领导力','n.'], lasting: ['持久的','adj.'] } },
+      { text: "Homework usually takes one to three hours each evening. Many students also prepare for standardized tests like the SAT or ACT, which are important for college applications.", zh: "家庭作业通常每晚需要一到三个小时。许多学生还要准备SAT或ACT等标准化考试，这些考试对大学申请很重要。", vocab: { standardized: ['标准化的','adj.'], applications: ['申请','n.'] } },
+      { text: "Weekends are for relaxing and having fun. Students might go to the movies, hang out at the mall, attend school events like football games or dances, or simply spend time with family and friends.", zh: "周末是放松和娱乐的时间。学生们可能去看电影、在商场闲逛、参加学校活动（如橄榄球赛或舞会），或者只是和家人朋友待在一起。", vocab: { attend: ['参加','v.'], 'hang out': ['闲逛','phrase'] } }
+    ]
+  }
+];
+
+/* ============================================================
+   DATA — 词汇表（中考核心 + Kpop场景 + 综合进阶）
+   ============================================================ */
+const wordLists = {
+  zhongkao: {
+    name: '中考核心词汇',
+    desc: '中考高频必考词 30 个',
+    words: [
+      { word: 'achieve', phonetic: '/əˈtʃiːv/', pos: 'v.', meaning: '实现；达到', example: 'She worked hard to achieve her goal.' },
+      { word: 'advantage', phonetic: '/ədˈvɑːntɪdʒ/', pos: 'n.', meaning: '优势；有利条件', example: 'Learning English gives you a big advantage.' },
+      { word: 'although', phonetic: '/ɔːlˈðəʊ/', pos: 'conj.', meaning: '虽然；尽管', example: 'Although it was raining, we went outside.' },
+      { word: 'ancient', phonetic: '/ˈeɪnʃənt/', pos: 'adj.', meaning: '古代的；古老的', example: 'China has a long and ancient history.' },
+      { word: 'attention', phonetic: '/əˈtenʃən/', pos: 'n.', meaning: '注意力；关注', example: 'Please pay attention to the teacher.' },
+      { word: 'believe', phonetic: '/bɪˈliːv/', pos: 'v.', meaning: '相信；认为', example: 'I believe you can do it!' },
+      { word: 'challenging', phonetic: '/ˈtʃælɪndʒɪŋ/', pos: 'adj.', meaning: '有挑战性的', example: 'The exam was quite challenging this year.' },
+      { word: 'communicate', phonetic: '/kəˈmjuːnɪkeɪt/', pos: 'v.', meaning: '交流；沟通', example: 'We communicate with our friends every day.' },
+      { word: 'compare', phonetic: '/kəmˈpeə/', pos: 'v.', meaning: '比较；对比', example: 'Don\'t compare yourself with others.' },
+      { word: 'confident', phonetic: '/ˈkɒnfɪdənt/', pos: 'adj.', meaning: '自信的', example: 'She felt confident before the performance.' },
+      { word: 'consider', phonetic: '/kənˈsɪdə/', pos: 'v.', meaning: '考虑；认为', example: 'Please consider my suggestion carefully.' },
+      { word: 'create', phonetic: '/kriˈeɪt/', pos: 'v.', meaning: '创造；创作', example: 'They created a beautiful song together.' },
+      { word: 'decision', phonetic: '/dɪˈsɪʒən/', pos: 'n.', meaning: '决定；决策', example: 'Making a good decision requires careful thought.' },
+      { word: 'describe', phonetic: '/dɪˈskraɪb/', pos: 'v.', meaning: '描述；形容', example: 'Can you describe what happened yesterday?' },
+      { word: 'develop', phonetic: '/dɪˈveləp/', pos: 'v.', meaning: '发展；开发', example: 'We need to develop new skills for the future.' },
+      { word: 'discover', phonetic: '/dɪˈskʌvə/', pos: 'v.', meaning: '发现', example: 'Scientists discover new things every day.' },
+      { word: 'encourage', phonetic: '/ɪnˈkʌrɪdʒ/', pos: 'v.', meaning: '鼓励', example: 'My teacher always encourages me to try harder.' },
+      { word: 'environment', phonetic: '/ɪnˈvaɪrənmənt/', pos: 'n.', meaning: '环境', example: 'We should protect the environment.' },
+      { word: 'experience', phonetic: '/ɪkˈspɪəriəns/', pos: 'n.', meaning: '经历；经验', example: 'It was an unforgettable experience.' },
+      { word: 'express', phonetic: '/ɪkˈspres/', pos: 'v.', meaning: '表达', example: 'Music helps me express my feelings.' },
+      { word: 'imagine', phonetic: '/ɪˈmædʒɪn/', pos: 'v.', meaning: '想象', example: 'Imagine you are standing on the stage.' },
+      { word: 'improve', phonetic: '/ɪmˈpruːv/', pos: 'v.', meaning: '改善；提高', example: 'I want to improve my English skills.' },
+      { word: 'influence', phonetic: '/ˈɪnfluəns/', pos: 'n./v.', meaning: '影响', example: 'Music has a great influence on young people.' },
+      { word: 'introduce', phonetic: '/ˌɪntrəˈdjuːs/', pos: 'v.', meaning: '介绍；引进', example: 'Let me introduce myself. I\'m Lily.' },
+      { word: 'knowledge', phonetic: '/ˈnɒlɪdʒ/', pos: 'n.', meaning: '知识；学问', example: 'Reading is a great way to gain knowledge.' },
+      { word: 'opportunity', phonetic: '/ˌɒpəˈtjuːnəti/', pos: 'n.', meaning: '机会', example: 'This is a great opportunity to learn something new.' },
+      { word: 'performance', phonetic: '/pəˈfɔːməns/', pos: 'n.', meaning: '表演；表现', example: 'Her performance on stage was amazing.' },
+      { word: 'prepare', phonetic: '/prɪˈpeə/', pos: 'v.', meaning: '准备', example: 'We need to prepare for the final exam.' },
+      { word: 'produce', phonetic: '/prəˈdjuːs/', pos: 'v.', meaning: '生产；制作', example: 'This company produces high-quality music videos.' },
+      { word: 'realize', phonetic: '/ˈrɪəlaɪz/', pos: 'v.', meaning: '意识到；实现', example: 'I didn\'t realize how important this was.' }
+    ]
+  },
+  kpop: {
+    name: 'Kpop 场景词汇',
+    desc: '追星必备英文表达 30 个',
+    words: [
+      { word: 'audition', phonetic: '/ɔːˈdɪʃən/', pos: 'n.', meaning: '试镜；选拔', example: 'She passed the audition and became a trainee.' },
+      { word: 'bias', phonetic: '/ˈbaɪəs/', pos: 'n.', meaning: '本命（最喜欢的成员）', example: 'Who is your bias in NMIXX?' },
+      { word: 'choreography', phonetic: '/ˌkɒriˈɒɡrəfi/', pos: 'n.', meaning: '编舞；舞蹈编排', example: 'The choreography of this song is so powerful.' },
+      { word: 'comeback', phonetic: '/ˈkʌmbæk/', pos: 'n.', meaning: '回归（发行新作品）', example: 'NMIXX announced their comeback date.' },
+      { word: 'concept', phonetic: '/ˈkɒnsept/', pos: 'n.', meaning: '概念；主题', example: 'This album has a really cool concept.' },
+      { word: 'concert', phonetic: '/ˈkɒnsət/', pos: 'n.', meaning: '演唱会', example: 'I want to go to their concert someday.' },
+      { word: 'debut', phonetic: '/ˈdeɪbjuː/', pos: 'n./v.', meaning: '出道', example: 'They debuted three years ago.' },
+      { word: 'fanbase', phonetic: '/ˈfænbeɪs/', pos: 'n.', meaning: '粉丝群体', example: 'Their fanbase keeps growing every year.' },
+      { word: 'fandom', phonetic: '/ˈfændəm/', pos: 'n.', meaning: '粉丝圈', example: 'The K-pop fandom is very active online.' },
+      { word: 'idol', phonetic: '/ˈaɪdəl/', pos: 'n.', meaning: '偶像', example: 'She dreams of becoming a K-pop idol.' },
+      { word: 'lyrics', phonetic: '/ˈlɪrɪks/', pos: 'n.', meaning: '歌词', example: 'The lyrics of this song are so meaningful.' },
+      { word: 'merch', phonetic: '/mɜːtʃ/', pos: 'n.', meaning: '周边商品', example: 'I bought some merch at the concert.' },
+      { word: 'photocard', phonetic: '/ˈfəʊtəʊkɑːd/', pos: 'n.', meaning: '小卡', example: 'I finally got the photocard I wanted!' },
+      { word: 'playlist', phonetic: '/ˈpleɪlɪst/', pos: 'n.', meaning: '播放列表', example: 'I made a playlist with all my favorite songs.' },
+      { word: 'practice', phonetic: '/ˈpræktɪs/', pos: 'n./v.', meaning: '练习', example: 'They practice dancing for hours every day.' },
+      { word: 'promotion', phonetic: '/prəˈməʊʃən/', pos: 'n.', meaning: '宣传活动', example: 'The group is doing promotions for their new album.' },
+      { word: 'reality show', phonetic: '/riˈæləti ʃəʊ/', pos: 'n.', meaning: '真人秀', example: 'Their reality show is really entertaining.' },
+      { word: 'release', phonetic: '/rɪˈliːs/', pos: 'v./n.', meaning: '发布；发行', example: 'They will release a new single next week.' },
+      { word: 'showcase', phonetic: '/ˈʃəʊkeɪs/', pos: 'n.', meaning: '展示演出', example: 'The debut showcase was incredible.' },
+      { word: 'stage', phonetic: '/steɪdʒ/', pos: 'n.', meaning: '舞台', example: 'They looked amazing on stage.' },
+      { word: 'stan', phonetic: '/stæn/', pos: 'v./n.', meaning: '支持/粉丝', example: 'I stan NMIXX so hard!' },
+      { word: 'streaming', phonetic: '/ˈstriːmɪŋ/', pos: 'n.', meaning: '刷音源；流媒体', example: 'Fans are streaming the new song all day.' },
+      { word: 'title track', phonetic: '/ˈtaɪtl træk/', pos: 'n.', meaning: '主打歌', example: 'The title track has a catchy melody.' },
+      { word: 'trainee', phonetic: '/treɪˈniː/', pos: 'n.', meaning: '练习生', example: 'She was a trainee for five years before debuting.' },
+      { word: 'visual', phonetic: '/ˈvɪʒuəl/', pos: 'n./adj.', meaning: '门面担当/视觉的', example: 'She is the visual of the group.' },
+      { word: 'vocalist', phonetic: '/ˈvəʊkəlɪst/', pos: 'n.', meaning: '主唱；歌手', example: 'She is the main vocalist with an amazing voice.' },
+      { word: 'world tour', phonetic: '/wɜːld tʊə/', pos: 'n.', meaning: '世界巡回演唱会', example: 'They announced a world tour for next year.' },
+      { word: 'variety show', phonetic: '/vəˈraɪəti ʃəʊ/', pos: 'n.', meaning: '综艺节目', example: 'They appeared on a popular variety show.' },
+      { word: 'award', phonetic: '/əˈwɔːd/', pos: 'n.', meaning: '奖项', example: 'They won the best new artist award.' },
+      { word: 'group', phonetic: '/ɡruːp/', pos: 'n.', meaning: '组合；团体', example: 'NMIXX is a talented girl group.' }
+    ]
+  },
+  advanced: {
+    name: '综合进阶词汇',
+    desc: '留学准备必备词 30 个',
+    words: [
+      { word: 'accomplish', phonetic: '/əˈkʌmplɪʃ/', pos: 'v.', meaning: '完成；实现', example: 'She accomplished everything on her list.' },
+      { word: 'appreciate', phonetic: '/əˈpriːʃieɪt/', pos: 'v.', meaning: '感激；欣赏', example: 'I really appreciate your help.' },
+      { word: 'atmosphere', phonetic: '/ˈætməsfɪə/', pos: 'n.', meaning: '氛围；气氛', example: 'The concert had an incredible atmosphere.' },
+      { word: 'background', phonetic: '/ˈbækɡraʊnd/', pos: 'n.', meaning: '背景', example: 'Students come from diverse backgrounds.' },
+      { word: 'community', phonetic: '/kəˈmjuːnəti/', pos: 'n.', meaning: '社区；群体', example: 'The school community is very welcoming.' },
+      { word: 'competition', phonetic: '/ˌkɒmpəˈtɪʃən/', pos: 'n.', meaning: '竞争；比赛', example: 'The competition was fierce but fair.' },
+      { word: 'confident', phonetic: '/ˈkɒnfɪdənt/', pos: 'adj.', meaning: '自信的', example: 'She spoke in a confident voice.' },
+      { word: 'contribute', phonetic: '/kənˈtrɪbjuːt/', pos: 'v.', meaning: '贡献；捐助', example: 'Everyone can contribute to the team.' },
+      { word: 'creative', phonetic: '/kriˈeɪtɪv/', pos: 'adj.', meaning: '有创造力的', example: 'She has a very creative approach to learning.' },
+      { word: 'curriculum', phonetic: '/kəˈrɪkjʊləm/', pos: 'n.', meaning: '课程体系', example: 'The school offers a rigorous curriculum.' },
+      { word: 'demonstrate', phonetic: '/ˈdemənstreɪt/', pos: 'v.', meaning: '展示；证明', example: 'Let me demonstrate how this works.' },
+      { word: 'enthusiasm', phonetic: '/ɪnˈθjuːziæzəm/', pos: 'n.', meaning: '热情；热忱', example: 'She showed great enthusiasm for the project.' },
+      { word: 'establish', phonetic: '/ɪˈstæblɪʃ/', pos: 'v.', meaning: '建立；确立', example: 'They established a new club at school.' },
+      { word: 'eventually', phonetic: '/ɪˈventʃuəli/', pos: 'adv.', meaning: '最终；终于', example: 'She eventually became the team leader.' },
+      { word: 'excellent', phonetic: '/ˈeksələnt/', pos: 'adj.', meaning: '优秀的；极好的', example: 'She received excellent grades this semester.' },
+      { word: 'generous', phonetic: '/ˈdʒenərəs/', pos: 'adj.', meaning: '慷慨的；大方的', example: 'He is very generous with his time.' },
+      { word: 'independent', phonetic: '/ˌɪndɪˈpendənt/', pos: 'adj.', meaning: '独立的', example: 'College students need to be independent.' },
+      { word: 'motivate', phonetic: '/ˈməʊtɪveɪt/', pos: 'v.', meaning: '激励；激发', example: 'Good teachers motivate their students.' },
+      { word: 'organize', phonetic: '/ˈɔːɡənaɪz/', pos: 'v.', meaning: '组织；安排', example: 'She organized a charity event at school.' },
+      { word: 'perspective', phonetic: '/pəˈspektɪv/', pos: 'n.', meaning: '观点；视角', example: 'Try to see things from a different perspective.' },
+      { word: 'present', phonetic: '/prɪˈzent/', pos: 'v.', meaning: '展示；呈现', example: 'She presented her project to the class.' },
+      { word: 'recommend', phonetic: '/ˌrekəˈmend/', pos: 'v.', meaning: '推荐；建议', example: 'I recommend this book to everyone.' },
+      { word: 'responsible', phonetic: '/rɪˈspɒnsəbl/', pos: 'adj.', meaning: '负责任的', example: 'She is responsible for the team project.' },
+      { word: 'significant', phonetic: '/sɪɡˈnɪfɪkənt/', pos: 'adj.', meaning: '重要的；显著的', example: 'There has been a significant improvement.' },
+      { word: 'strategy', phonetic: '/ˈstrætədʒi/', pos: 'n.', meaning: '策略；战略', example: 'We need a new strategy for the competition.' },
+      { word: 'succeed', phonetic: '/səkˈsiːd/', pos: 'v.', meaning: '成功', example: 'If you work hard, you will succeed.' },
+      { word: 'tradition', phonetic: '/trəˈdɪʃən/', pos: 'n.', meaning: '传统', example: 'It\'s a tradition to have a school dance.' },
+      { word: 'unforgettable', phonetic: '/ˌʌnfəˈɡetəbl/', pos: 'adj.', meaning: '难忘的', example: 'The concert was an unforgettable experience.' },
+      { word: 'volunteer', phonetic: '/ˌvɒlənˈtɪə/', pos: 'n./v.', meaning: '志愿者/志愿', example: 'She volunteers at the local hospital.' },
+      { word: 'welcome', phonetic: '/ˈwelkəm/', pos: 'adj./v.', meaning: '受欢迎的/欢迎', example: 'You are always welcome here.' }
+    ]
+  }
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let state = {
+  section: 'home',
+  currentLesson: null,
+  currentReading: null,
+  currentWordList: 'videoAll',
+  flashIndex: 0,
+  starred: new Set(),
+  wordsLearned: new Set(),
+  lessonsCompleted: new Set(),
+  quizzesCompleted: 0,
+  quizState: null,
+  videoVocabFilter: 'all'
+};
+
+/* ---- localStorage persistence ---- */
+const STORAGE_KEY = 'englishstar_state';
+function saveState() {
+  try {
+    const d = {
+      starred: [...state.starred],
+      wordsLearned: [...state.wordsLearned],
+      lessonsCompleted: [...state.lessonsCompleted],
+      quizzesCompleted: state.quizzesCompleted,
+      currentWordList: state.currentWordList,
+      flashIndex: state.flashIndex,
+      videoVocabFilter: state.videoVocabFilter,
+      lastUpdate: new Date().toISOString()
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+  } catch(e) {}
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d.starred) state.starred = new Set(d.starred);
+    if (d.wordsLearned) state.wordsLearned = new Set(d.wordsLearned);
+    if (d.lessonsCompleted) state.lessonsCompleted = new Set(d.lessonsCompleted);
+    if (typeof d.quizzesCompleted === 'number') state.quizzesCompleted = d.quizzesCompleted;
+    if (d.currentWordList) state.currentWordList = d.currentWordList;
+    if (typeof d.flashIndex === 'number') state.flashIndex = d.flashIndex;
+    if (d.videoVocabFilter) state.videoVocabFilter = d.videoVocabFilter;
+  } catch(e) {}
+}
+loadState();
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function toggleMobileMenu() {
+  var sb = document.getElementById('sidebar');
+  var ov = document.getElementById('mobileOverlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('show');
+}
+
+function navigateTo(section, data) {
+  if (typeof stopReading === 'function') stopReading();
+  // Close mobile sidebar if open
+  var sb = document.getElementById('sidebar');
+  if (sb && sb.classList.contains('open')) { sb.classList.remove('open'); document.getElementById('mobileOverlay').classList.remove('show'); }
+  state.section = section;
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  const cub = document.getElementById('contentUpdateBar'); if(cub) cub.style.display='none';
+  document.getElementById('sec-' + section).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.nav-item')[['home','video','reading','vocab','quiz'].indexOf(section)].classList.add('active');
+  if (section === 'video') { renderVideoList(); document.getElementById('contentUpdateBar').style.display='flex'; updateContentDate(); }
+  if (section === 'reading') renderReadingList();
+  if (section === 'vocab') renderVocabCenter();
+  if (section === 'quiz') renderQuizMenu();
+  if (section === 'home') updateStats();
+  document.getElementById('main').scrollTop = 0;
+}
+
+/* ============================================================
+   HOME
+   ============================================================ */
+function updateStats() {
+  document.getElementById('stat-words').textContent = state.wordsLearned.size;
+  document.getElementById('stat-lessons').textContent = state.lessonsCompleted.size;
+  document.getElementById('stat-quizzes').textContent = state.quizzesCompleted;
+  document.getElementById('stat-starred').textContent = state.starred.size;
+}
+
+/* ============================================================
+   VIDEO
+   ============================================================ */
+function renderVideoList() {
+  const c = document.getElementById('videoListView');
+  c.innerHTML = '<div class="lesson-grid">' + videoLessons.map((l, i) =>
+    `<div class="lesson-card" onclick="openLesson(${i})">
+      <div class="lesson-thumb" style="background:${l.thumb}">
+        <span class="tag">${l.tag}</span>
+        <span style="font-size:48px">${l.emoji}</span>
+        <span class="duration">${l.duration}</span>
+      </div>
+      <div class="lesson-info">
+        <h3>${l.title}</h3>
+        <p>${l.desc}</p>
+        <div class="lesson-meta">
+          <span>📝 ${l.coreVocab.length} 核心词汇</span>
+          <span>📖 ${l.transcript.length} 句字幕</span>
+        </div>
+      </div>
+    </div>`
+  ).join('') + '</div>';
+}
+
+let videoPlatform = 'bilibili';
+
+function getVideoEmbed(l) {
+  if (videoPlatform === 'bilibili' && l.biliId) {
+    return `<iframe src="https://player.bilibili.com/player.html?bvid=${l.biliId}&high_quality=1&danmaku=0&autoplay=0" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen="true" style="width:100%;height:100%;border:none;aspect-ratio:16/9" onerror="videoLoadError()"></iframe>`;
+  } else if (videoPlatform === 'youtube' && l.youtubeId) {
+    return `<iframe src="https://www.youtube.com/embed/${l.youtubeId}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:none;aspect-ratio:16/9" onerror="videoLoadError()"></iframe>`;
+  }
+  return '';
+}
+
+function switchPlatform(p) {
+  videoPlatform = p;
+  if (state.currentLesson !== null) openLesson(state.currentLesson);
+}
+
+function videoLoadError() {
+  var fb = document.getElementById('videoFallback');
+  var ifr = document.getElementById('videoFrame');
+  if (fb) fb.classList.add('show');
+  if (ifr) ifr.style.display = 'none';
+}
+
+let lessonViewMode = 'both';
+function switchMode(mode) {
+  lessonViewMode = mode;
+  const lv = document.getElementById('lessonView');
+  if (!lv) return;
+  lv.classList.remove('focus-reading', 'video-only');
+  if (mode === 'focus-reading') { lv.classList.add('focus-reading'); }
+  else if (mode === 'video-only') { lv.classList.add('video-only'); }
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  var activeId = mode === 'both' ? 'modeBoth' : mode === 'focus-reading' ? 'modeFocus' : 'modeVideo';
+  var el = document.getElementById(activeId);
+  if (el) el.classList.add('active');
+}
+
+function openLesson(idx) {
+  state.currentLesson = idx;
+  const l = videoLessons[idx];
+  const c = document.getElementById('videoListView');
+  const hasEmbed = (videoPlatform === 'bilibili' && l.biliId) || (videoPlatform === 'youtube' && l.youtubeId);
+  const embedHtml = hasEmbed ? getVideoEmbed(l) : '';
+
+  c.innerHTML = `
+    <button class="back-btn" onclick="renderVideoList()">← 返回课程列表</button>
+    <h3 style="font-size:20px;margin-bottom:12px">${l.title}</h3>
+    <div class="source-switch">
+      <label>🌐 视频源：</label>
+      <select onchange="switchPlatform(this.value)">
+        <option value="bilibili" ${videoPlatform==='bilibili'?'selected':''}>🇨🇳 B站（推荐）</option>
+        <option value="youtube" ${videoPlatform==='youtube'?'selected':''}>🌍 YouTube</option>
+      </select>
+      <span style="font-size:11px;color:var(--gray);margin-left:8px">${videoPlatform==='bilibili' ? (l.biliId ? '已配置B站视频' : '暂未配置B站BV号，请手动搜索收藏') : (l.youtubeId ? '需要科学上网' : '无YouTube源')}</span>
+    </div>
+    <div class="lesson-notice">
+      <strong>\ud83d\udca1 \u5b66\u4e60\u8bf4\u660e\uff1a</strong>\u4e0b\u65b9\u6587\u672c\u662f\u89c6\u9891\u4e2d<strong>\u5b9e\u9645\u51fa\u73b0\u7684\u82f1\u6587\u539f\u58f0</strong>\uff08\u7531AI\u8bed\u97f3\u8bc6\u522b\u8f6c\u5199\uff09\uff0c\u5305\u542b\u8bcd\u6c47\u6ce8\u91ca\u548c\u4e2d\u6587\u7ffb\u8bd1\u3002\u5efa\u8bae\uff1a\u5148\u770b\u89c6\u9891\u611f\u53d7\u771f\u5b9e\u82f1\u8bed\u73af\u5883\uff0c\u518d\u7528\u4e0b\u65b9\u6587\u672c\u7cbe\u5b66\u8bcd\u6c47\u548c\u8868\u8fbe\u3002
+    </div>
+    <div class="mode-switcher">
+      <button class="mode-btn active" id="modeBoth" onclick="switchMode('both')">\ud83c\udfac \u53cc\u5c4f\u6a21\u5f0f</button>
+      <button class="mode-btn" id="modeFocus" onclick="switchMode('focus-reading')">\ud83d\udcdd \u7cbe\u8bfb\u6a21\u5f0f</button>
+      <button class="mode-btn" id="modeVideo" onclick="switchMode('video-only')">\ud83c\udfa7 \u6c89\u6d78\u6a21\u5f0f</button>
+    </div>
+    <div class="lesson-view" id="lessonView">
+      <div class="video-area video-container">
+        ${hasEmbed ? embedHtml : ''}
+        <div class="video-fallback ${hasEmbed ? '' : 'show'}" id="videoFallback">
+          <div class="vf-icon">${l.emoji}</div>
+          <div class="vf-title">${l.title}</div>
+          <div class="vf-desc">${l.desc}</div>
+          <div class="platform-tabs">
+            <a class="platform-tab primary" href="https://www.bilibili.com/video/${l.biliId}" target="_blank">📺 在B站打开此视频</a>
+            <a class="platform-tab" href="https://search.bilibili.com/all?keyword=${encodeURIComponent(l.title)}" target="_blank">🔍 在B站搜索</a>
+          </div>
+          <div class="video-hint">
+            💡 <strong>平板/手机用户：</strong>如果视频无法在页面内播放，点击上方按钮可直接在B站APP或浏览器中打开。<br>
+            📝 即使视频无法播放，下方的<strong>字幕文本和词汇学习</strong>完全可以正常使用！
+          </div>
+        </div>
+      </div>
+      <div id="mobileVideoBar" style="display:none;margin:12px 0;text-align:center">
+        <a href="https://www.bilibili.com/video/${l.biliId}" target="_blank" style="display:inline-block;padding:10px 24px;background:var(--pink);color:#fff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600">📺 在B站APP中打开视频</a>
+        <p style="font-size:11px;color:var(--gray);margin-top:6px">如果视频在页面内无法播放，点击此按钮可在B站APP中观看</p>
+      </div>
+      <div class="transcript-panel">
+        <div class="transcript-header">
+          <h3>📝 视频字幕 · Video Subtitles</h3>
+          <span style="font-size:12px;color:var(--gray)">视频原声AI转写字幕，点击单词查看翻译</span>
+        </div>
+        <div class="transcript-body" id="transcriptBody">
+          ${l.transcript.map((t, i) => {
+            const enHtml = highlightVocab(t.en, t.vocab);
+            return `<div class="transcript-line" data-idx="${i}" onclick="highlightLine(this)">
+              ${enHtml}
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      <div class="lesson-sidebar">
+        <div class="vocab-section">
+          <h3>📌 本课核心词汇 <span style="font-size:12px;color:var(--gray);font-weight:normal">（点击添加到闪卡）</span></h3>
+          <div class="vocab-grid">
+            ${getLessonVocab(l).map(v =>
+              `<div class="vocab-item" onclick="showWordPopupFromVocab('${v.word}')">
+                <div class="word">${v.word} ${state.starred.has(v.word) ? '⭐' : ''}</div>
+                <div class="phonetic">${v.phonetic}</div>
+                <div class="meaning">${v.pos} ${v.meaning}</div>
+              </div>`
+            ).join('')}
+          </div>
+          <button style="margin-top:16px;padding:10px 24px;border-radius:8px;border:none;background:var(--pink);color:#fff;cursor:pointer;font-family:var(--font-body);font-size:13px" onclick="markLessonComplete(${idx})">
+            ${state.lessonsCompleted.has(idx) ? '✅ 已完成' : '标记为已学完'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+  // Set up iframe error listener
+  if (hasEmbed) {
+    setTimeout(() => {
+      const iframe = document.querySelector('.video-container iframe');
+      if (iframe) {
+        iframe.addEventListener('error', videoLoadError);
+        setTimeout(() => {
+          try {
+            if (iframe && iframe.contentDocument === null) { videoLoadError(); }
+          } catch(e) { /* cross-origin, iframe loaded OK */ }
+        }, 8000);
+      }
+    }, 100);
+  }
+  // Show mobile fallback bar on touch devices
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(navigator.userAgent) || ('ontouchstart' in window);
+  const mBar = document.getElementById('mobileVideoBar');
+  if (mBar && isMobile && hasEmbed) { mBar.style.display = 'block'; }
+  document.getElementById('main').scrollTop = 0;
+}
+
+function highlightVocab(text, vocab) {
+  if (!vocab || Object.keys(vocab).length === 0) return makeClickable(text);
+  let result = text;
+  Object.keys(vocab).sort((a, b) => b.length - a.length).forEach(word => {
+    const regex = new RegExp(`\\b(${word})\\b`, 'gi');
+    result = result.replace(regex, `<span class="vocab-word" onclick="event.stopPropagation();showWordPopup('${word.toLowerCase()}','${vocab[word][0]}','${vocab[word][1]}','${text.replace(/'/g,"\\'")}')">$1</span>`);
+  });
+  // Make remaining words clickable too
+  return result;
+}
+
+function makeClickable(text) {
+  return text.replace(/\b([a-zA-Z'-]+)\b/g, (match) => {
+    return `<span class="vocab-word" onclick="event.stopPropagation();lookupWord('${match.toLowerCase()}')">${match}</span>`;
+  });
+}
+
+function highlightLine(el) {
+  document.querySelectorAll('.transcript-line').forEach(l => l.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function getLessonVocab(lesson) {
+  return lesson.coreVocab.map(w => {
+    // Look up in wordLists
+    for (const list of Object.values(wordLists)) {
+      const found = list.words.find(v => v.word === w);
+      if (found) return found;
+    }
+    // Build from transcript
+    for (const t of lesson.transcript) {
+      if (t.vocab && t.vocab[w]) {
+        return { word: w, phonetic: '', pos: t.vocab[w][1], meaning: t.vocab[w][0], example: t.en };
+      }
+    }
+    return { word: w, phonetic: '', pos: '', meaning: '', example: '' };
+  });
+}
+
+function markLessonComplete(idx) {
+  state.lessonsCompleted.add(idx); saveState();
+  openLesson(idx);
+}
+
+/* ============================================================
+   READING
+   ============================================================ */
+function renderReadingList() {
+  const c = document.getElementById('readingListView');
+  c.innerHTML = '<div class="reading-grid">' + readingArticles.map((a, i) =>
+    `<div class="reading-card" onclick="openReading(${i})">
+      <div class="reading-cover" style="background:${a.color}"><span style="font-size:48px">${a.emoji}</span></div>
+      <div class="reading-body">
+        <h3>${a.title}</h3>
+        <p>${a.subtitle}</p>
+      </div>
+    </div>`
+  ).join('') + '</div>';
+}
+
+function openReading(idx) {
+  state.currentReading = idx;
+  const a = readingArticles[idx];
+  const c = document.getElementById('readingListView');
+  let allVocab = {};
+  a.content.forEach(p => { if (p.vocab) Object.assign(allVocab, p.vocab); });
+  c.innerHTML = `
+    <div class="reading-view">
+      <button class="back-btn" onclick="renderReadingList()">← 返回阅读列表</button>
+      <div class="reading-hint">💡 点击任意英文单词即可查看中文翻译；点击高亮词汇也可查看释义。点击下方播放按钮可朗读全文。</div>
+      <div class="reading-audio-bar">
+        <span class="ra-label">🔊 朗读控制</span>
+        <button class="btn-play" id="btnPlay" onclick="startReading()">▶ 播放</button>
+        <button class="btn-pause" id="btnPause" onclick="togglePause()" disabled>⏸ 暂停</button>
+        <button class="btn-stop" id="btnStop" onclick="stopReading()">⏹ 停止</button>
+        <span id="readingProgress" style="font-size:12px;color:var(--gray);min-width:60px"></span>
+        <div class="speed-control">
+          <span style="font-size:11px;color:var(--gray)">语速</span>
+          <button class="speed-btn" onclick="setReadingSpeed(0.6)">慢</button>
+          <button class="speed-btn active" onclick="setReadingSpeed(0.85)">正常</button>
+          <button class="speed-btn" onclick="setReadingSpeed(1.1)">快</button>
+        </div>
+      </div>
+      <div class="reading-content" id="readingContent">
+        <h3>${a.title}</h3>
+        ${a.content.map((p, i) => {
+          let text = p.text.replace(/\b([A-Za-z][A-Za-z'\-]*)\b/g, (match, word) => {
+            const key = word.toLowerCase();
+            const v = readingVocabDict[key];
+            const m = v ? v[0] : '';
+            const ps = v ? v[1] : '';
+            const safeCtx = p.text.replace(/'/g, "\\'");
+            return `<span class="clickable" onclick="showReadingWord('${key}','${m}','${ps}','${safeCtx}')">${word}</span>`;
+          });
+          return `<p class="reading-para" data-para-index="${i}">${text}</p><p style="font-size:12px;color:var(--gray);margin-top:-8px;margin-bottom:16px;line-height:1.6">${p.zh}</p>`;
+        }).join('')}
+      </div>
+      <div class="reading-vocab">
+        <h4>📌 本文核心词汇 (${Object.keys(allVocab).length} 个)</h4>
+        <div class="reading-vocab-list">
+          ${Object.entries(allVocab).map(([w, v]) =>
+            `<span class="reading-vocab-tag" onclick="showReadingWord('${w}','${v[0]}','${v[1]}','')">${w} · ${v[0]}</span>`
+          ).join('')}
+        </div>
+      </div>
+    </div>`;
+  readingState.article = a;
+  document.getElementById('main').scrollTop = 0;
+}
+
+/* ============================================================
+   VOCABULARY CENTER
+   ============================================================ */
+function renderVocabCenter() {
+  renderWordlistSelector();
+  renderWordlistTable();
+  renderFlashcards();
+}
+
+function renderWordlistSelector() {
+  const c = document.getElementById('wordlistSelector');
+  // Group: video vocab first, then curated lists
+  const videoKeys = Object.keys(wordLists).filter(k => k.startsWith('video'));
+  const curatedKeys = Object.keys(wordLists).filter(k => !k.startsWith('video'));
+  const videoBtns = videoKeys.map(key => {
+    const list = wordLists[key];
+    return `<button class="wordlist-btn ${key === state.currentWordList ? 'active' : ''}" onclick="switchWordList('${key}')" style="${key.startsWith('video-') ? 'font-size:11px;padding:6px 10px' : ''}">${list.name} (${list.words.length})</button>`;
+  }).join('');
+  const curatedBtns = curatedKeys.map(key => {
+    const list = wordLists[key];
+    return `<button class="wordlist-btn ${key === state.currentWordList ? 'active' : ''}" onclick="switchWordList('${key}')">${list.name} (${list.words.length})</button>`;
+  }).join('');
+  c.innerHTML = `<div style="margin-bottom:8px;font-size:11px;color:var(--purple);font-weight:600">\ud83c\udfac \u89c6\u9891\u8bcd\u6c47</div>${videoBtns}<div style="margin:12px 0 8px;font-size:11px;color:var(--purple);font-weight:600">\ud83d\udcda \u8003\u8bd5/\u573a\u666f\u8bcd\u6c47</div>${curatedBtns}`;
+}
+
+function switchWordList(key) {
+  state.currentWordList = key;
+  state.flashIndex = 0;
+  state.videoVocabFilter = key;
+  saveState();
+  renderWordlistSelector();
+  renderWordlistTable();
+  renderFlashcards();
+}
+
+function renderWordlistTable(filter) {
+  const list = wordLists[state.currentWordList];
+  let words = list.words;
+  if (filter) {
+    const q = filter.toLowerCase();
+    words = words.filter(w => w.word.toLowerCase().includes(q) || w.meaning.includes(q));
+  }
+  const c = document.getElementById('wordlistContent');
+  c.innerHTML = `<div class="wordlist-table">
+    <div class="wordlist-row header"><span>单词 / Word</span><span>词性</span><span>释义</span><span>收藏</span></div>
+    ${words.map(w => `
+      <div class="wordlist-row" onclick="showWordPopupFromVocab('${w.word}')">
+        <span><strong>${w.word}</strong> <span style="font-size:11px;color:var(--gray)">${w.phonetic}</span></span>
+        <span style="color:var(--purple)">${w.pos}</span>
+        <span style="color:var(--gray)">${w.meaning}</span>
+        <span class="star ${state.starred.has(w.word) ? 'starred' : ''}" onclick="event.stopPropagation();toggleStar('${w.word}')">${state.starred.has(w.word) ? '★' : '☆'}</span>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function searchVocab(query) {
+  renderWordlistTable(query);
+}
+
+function switchVocabTab(tab, btn) {
+  document.querySelectorAll('.vocab-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.vocab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(tab === 'list' ? 'vocabListPanel' : 'vocabFlashPanel').classList.add('active');
+  if (tab === 'flash') renderFlashcards();
+}
+
+/* Flashcards */
+function renderFlashcards() {
+  const list = wordLists[state.currentWordList];
+  const w = list.words[state.flashIndex];
+  const c = document.getElementById('flashcardArea');
+  if (!w) { c.innerHTML = '<p>暂无词汇</p>'; return; }
+  c.innerHTML = `
+    <div class="wordlist-selector">
+      ${Object.entries(wordLists).filter(([k]) => k === 'videoAll' || !k.startsWith('video-')).map(([key, l]) =>
+        `<button class="wordlist-btn ${key === state.currentWordList ? 'active' : ''}" onclick="switchWordList('${key}')">${l.name}</button>`
+      ).join('')}
+    </div>
+    <div class="flashcard-counter">${state.flashIndex + 1} / ${list.words.length}</div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="fc-word">${w.word}</div>
+          <div class="fc-phonetic">${w.phonetic}</div>
+          <div class="fc-hint">点击翻转查看释义 →</div>
+        </div>
+        <div class="flashcard-back">
+          <div class="fc-pos">${w.pos}</div>
+          <div class="fc-meaning">${w.meaning}</div>
+          <div class="fc-example">${w.example}</div>
+        </div>
+      </div>
+    </div>
+    <div class="flashcard-controls">
+      <button class="fc-nav-btn secondary" onclick="prevCard()" ${state.flashIndex === 0 ? 'disabled' : ''}>← 上一个</button>
+      <button class="fc-nav-btn secondary" onclick="toggleStar('${w.word}')">${state.starred.has(w.word) ? '⭐ 已收藏' : '☆ 收藏'}</button>
+      <button class="fc-nav-btn primary" onclick="nextCard()">${state.flashIndex === list.words.length - 1 ? '重新开始' : '下一个 →'}</button>
+    </div>`;
+}
+
+function flipCard() {
+  document.getElementById('flashcard').classList.toggle('flipped');
+  const w = wordLists[state.currentWordList].words[state.flashIndex];
+  if (w) { state.wordsLearned.add(w.word); saveState(); }
+}
+
+function nextCard() {
+  const list = wordLists[state.currentWordList];
+  state.flashIndex = (state.flashIndex + 1) % list.words.length;
+  renderFlashcards();
+}
+
+function prevCard() {
+  if (state.flashIndex > 0) { state.flashIndex--; renderFlashcards(); }
+}
+
+/* Star */
+function toggleStar(word) {
+  if (state.starred.has(word)) state.starred.delete(word);
+  else state.starred.add(word);
+  saveState();
+  if (state.section === 'vocab') { renderWordlistTable(); renderFlashcards(); }
+}
+
+/* ============================================================
+   QUIZ SYSTEM
+   ============================================================ */
+function renderQuizMenu() {
+  const c = document.getElementById('quizContent');
+  c.innerHTML = `<div class="quiz-menu">
+    <div class="quiz-type-card" onclick="startQuiz('choice')">
+      <div class="qicon">🔤</div>
+      <h3>英选中 — 选择题</h3>
+      <p>看英文单词，选出正确的中文意思。10道题，考验你的词汇量！</p>
+    </div>
+    <div class="quiz-type-card" onclick="startQuiz('spell')">
+      <div class="qicon">✏️</div>
+      <h3>拼写挑战</h3>
+      <p>看中文释义，拼出正确的英文单词。锻炼你的拼写能力！</p>
+    </div>
+    <div class="quiz-type-card" onclick="startQuiz('match')">
+      <div class="qicon">🔗</div>
+      <h3>连线配对</h3>
+      <p>将英文单词和中文释义一一配对。考验你的反应速度！</p>
+    </div>
+  </div>`;
+}
+
+function getAllVocabWords() {
+  let all = [];
+  Object.values(wordLists).forEach(list => {
+    list.words.forEach(w => { if (!all.find(x => x.word === w.word)) all.push(w); });
+  });
+  return all;
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz(type) {
+  const allWords = shuffle(getAllVocabWords());
+  const quizWords = allWords.slice(0, 10);
+  state.quizState = { type, words: quizWords, current: 0, score: 0, answered: false, allWords };
+  if (type === 'match') {
+    state.quizState.matchWords = allWords.slice(0, 6);
+    state.quizState.matched = new Set();
+    state.quizState.selectedEn = null;
+    state.quizState.selectedZh = null;
+  }
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const qs = state.quizState;
+  const c = document.getElementById('quizContent');
+  if (!qs) { renderQuizMenu(); return; }
+
+  if (qs.type === 'match') { renderMatchQuiz(); return; }
+
+  if (qs.current >= qs.words.length) {
+    c.innerHTML = `<button class="back-btn" onclick="renderQuizMenu()">← 返回测验列表</button>
+      <div class="quiz-area"><div class="quiz-card"><div class="quiz-result">
+        <div class="quiz-score">${qs.score}/${qs.words.length}</div>
+        <p>${qs.score >= 8 ? '太棒了！你是词汇达人！🌟' : qs.score >= 5 ? '不错哦！继续努力！💪' : '加油！多复习闪卡再来挑战！📚'}</p>
+        <button class="quiz-next-btn" onclick="startQuiz('${qs.type}')">再来一次</button>
+        <button class="quiz-next-btn" style="background:var(--purple);margin-left:8px" onclick="renderQuizMenu()">换个题型</button>
+      </div></div></div>`;
+    state.quizzesCompleted++; saveState();
+    return;
+  }
+
+  const w = qs.words[qs.current];
+  const progress = ((qs.current) / qs.words.length * 100).toFixed(0);
+
+  if (qs.type === 'choice') {
+    // Generate 4 options
+    const others = shuffle(qs.allWords.filter(x => x.word !== w.word)).slice(0, 3);
+    const options = shuffle([w, ...others]);
+    c.innerHTML = `<button class="back-btn" onclick="renderQuizMenu()">← 返回</button>
+      <div class="quiz-area">
+        <div class="quiz-progress"><div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${progress}%"></div></div><div class="quiz-progress-text">${qs.current + 1}/${qs.words.length}</div></div>
+        <div class="quiz-card">
+          <div class="quiz-question">这个单词是什么意思？<span class="qword">${w.word}</span><span style="font-size:13px;color:var(--gray)">${w.phonetic}</span></div>
+          <div class="quiz-options" id="quizOptions">
+            ${options.map((o, i) => `<button class="quiz-option" onclick="answerChoice(this,'${o.word}','${w.word}')">${o.pos} ${o.meaning}</button>`).join('')}
+          </div>
+        </div>
+      </div>`;
+  } else if (qs.type === 'spell') {
+    c.innerHTML = `<button class="back-btn" onclick="renderQuizMenu()">← 返回</button>
+      <div class="quiz-area">
+        <div class="quiz-progress"><div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${progress}%"></div></div><div class="quiz-progress-text">${qs.current + 1}/${qs.words.length}</div></div>
+        <div class="quiz-card">
+          <div class="quiz-question">请拼写这个单词：<span class="qword" style="font-size:20px">${w.pos} ${w.meaning}</span><span style="font-size:12px;color:var(--gray)">提示：${w.word.length} 个字母，首字母 "${w.word[0]}"</span></div>
+          <input type="text" class="quiz-spell-input" id="spellInput" placeholder="输入英文单词..." autocomplete="off" onkeydown="if(event.key==='Enter')checkSpell()">
+          <button class="quiz-submit" onclick="checkSpell()">确认提交</button>
+          <div id="spellResult" style="text-align:center;margin-top:12px;font-size:14px"></div>
+        </div>
+      </div>`;
+    setTimeout(() => { const inp = document.getElementById('spellInput'); if(inp) inp.focus(); }, 100);
+  }
+}
+
+function answerChoice(btn, selected, correct) {
+  if (state.quizState.answered) return;
+  state.quizState.answered = true;
+  const options = document.querySelectorAll('.quiz-option');
+  options.forEach(o => o.classList.add('disabled'));
+  if (selected === correct) {
+    btn.classList.add('correct');
+    state.quizState.score++;
+  } else {
+    btn.classList.add('wrong');
+    options.forEach(o => { if (o.textContent.includes(wordLists[state.currentWordList]?.words.find(w => w.word === correct)?.meaning || correct)) o.classList.add('correct'); });
+    // Find the correct one
+    options.forEach(o => {
+      const correctWord = state.quizState.words[state.quizState.current];
+      if (o.textContent.includes(correctWord.meaning)) o.classList.add('correct');
+    });
+  }
+  // Add next button
+  const card = document.querySelector('.quiz-card');
+  const nb = document.createElement('button');
+  nb.className = 'quiz-next-btn';
+  nb.textContent = '下一题 →';
+  nb.onclick = () => { state.quizState.current++; state.quizState.answered = false; renderQuiz(); };
+  card.appendChild(nb);
+}
+
+function checkSpell() {
+  const qs = state.quizState;
+  if (qs.answered) return;
+  qs.answered = true;
+  const input = document.getElementById('spellInput');
+  const result = document.getElementById('spellResult');
+  const w = qs.words[qs.current];
+  const answer = input.value.trim().toLowerCase();
+  if (answer === w.word.toLowerCase()) {
+    input.classList.add('correct');
+    result.innerHTML = '<span style="color:var(--green)">✅ 正确！</span>';
+    qs.score++;
+  } else {
+    input.classList.add('wrong');
+    result.innerHTML = `<span style="color:var(--red)">❌ 正确答案是：<strong>${w.word}</strong></span>`;
+  }
+  const nb = document.createElement('button');
+  nb.className = 'quiz-next-btn';
+  nb.textContent = '下一题 →';
+  nb.onclick = () => { qs.current++; qs.answered = false; renderQuiz(); };
+  document.querySelector('.quiz-card').appendChild(nb);
+}
+
+/* Match Quiz */
+function renderMatchQuiz() {
+  const qs = state.quizState;
+  const words = qs.matchWords;
+  const c = document.getElementById('quizContent');
+  const enWords = shuffle(words);
+  const zhWords = shuffle(words);
+  c.innerHTML = `<button class="back-btn" onclick="renderQuizMenu()">← 返回</button>
+    <div class="quiz-area">
+      <div class="quiz-progress"><div class="quiz-progress-text">点击英文单词，再点击对应的中文释义 (${qs.matched.size}/${words.length})</div></div>
+      <div class="quiz-card">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+          <div>
+            <h4 style="font-size:13px;color:var(--gray);margin-bottom:12px;text-align:center">English</h4>
+            ${enWords.map(w => `<div class="quiz-option match-en ${qs.matched.has(w.word) ? 'correct' : ''} ${qs.selectedEn === w.word ? 'correct' : ''}" data-word="${w.word}" onclick="selectMatchEn('${w.word}')" style="margin-bottom:8px;${qs.matched.has(w.word) ? 'opacity:0.4;pointer-events:none' : ''}">${w.word}</div>`).join('')}
+          </div>
+          <div>
+            <h4 style="font-size:13px;color:var(--gray);margin-bottom:12px;text-align:center">中文</h4>
+            ${zhWords.map(w => `<div class="quiz-option match-zh ${qs.matched.has(w.word) ? 'correct' : ''} ${qs.selectedZh === w.word ? 'correct' : ''}" data-word="${w.word}" onclick="selectMatchZh('${w.word}')" style="margin-bottom:8px;${qs.matched.has(w.word) ? 'opacity:0.4;pointer-events:none' : ''}">${w.pos} ${w.meaning}</div>`).join('')}
+          </div>
+        </div>
+        <div id="matchResult" style="text-align:center;margin-top:16px"></div>
+      </div>
+    </div>`;
+}
+
+function selectMatchEn(word) {
+  state.quizState.selectedEn = word;
+  document.querySelectorAll('.match-en').forEach(el => {
+    el.style.borderColor = el.dataset.word === word ? 'var(--pink)' : '#E2E8F0';
+    el.style.background = el.dataset.word === word ? 'var(--pink-light)' : '#fff';
+  });
+  tryMatch();
+}
+
+function selectMatchZh(word) {
+  state.quizState.selectedZh = word;
+  document.querySelectorAll('.match-zh').forEach(el => {
+    el.style.borderColor = el.dataset.word === word ? 'var(--blue)' : '#E2E8F0';
+    el.style.background = el.dataset.word === word ? '#EFF6FF' : '#fff';
+  });
+  tryMatch();
+}
+
+function tryMatch() {
+  const qs = state.quizState;
+  if (qs.selectedEn && qs.selectedZh) {
+    const result = document.getElementById('matchResult');
+    if (qs.selectedEn === qs.selectedZh) {
+      qs.matched.add(qs.selectedEn);
+      result.innerHTML = '<span style="color:var(--green)">✅ 配对成功！</span>';
+      qs.selectedEn = null;
+      qs.selectedZh = null;
+      setTimeout(() => {
+        if (qs.matched.size === qs.matchWords.length) {
+          qs.score = qs.matchWords.length;
+          qs.current = qs.words.length; // trigger end
+          state.quizzesCompleted++; saveState();
+          renderQuiz();
+        } else {
+          renderMatchQuiz();
+        }
+      }, 600);
+    } else {
+      result.innerHTML = '<span style="color:var(--red)">❌ 不匹配，再试试！</span>';
+      qs.selectedEn = null;
+      qs.selectedZh = null;
+      setTimeout(() => {
+        document.querySelectorAll('.match-en,.match-zh').forEach(el => {
+          if (!qs.matched.has(el.dataset.word)) {
+            el.style.borderColor = '#E2E8F0';
+            el.style.background = '#fff';
+          }
+        });
+        result.innerHTML = '';
+      }, 800);
+    }
+  }
+}
+
+
+/* ============================================================
+   CONTENT MANAGEMENT
+   ============================================================ */
+const CONTENT_CONFIG_KEY = 'englishstar_content_config';
+function getContentConfig() {
+  try {
+    const raw = localStorage.getItem(CONTENT_CONFIG_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  // Default: current video BV IDs
+  return {
+    bvids: videoLessons.map(l => l.biliId).filter(Boolean),
+    interval: 0,
+    lastUpdated: ''
+  };
+}
+function saveContentConfig(cfg) {
+  try { localStorage.setItem(CONTENT_CONFIG_KEY, JSON.stringify(cfg)); } catch(e) {}
+}
+function openConfigModal() {
+  const cfg = getContentConfig();
+  document.getElementById('configBVList').value = cfg.bvids.join('\n');
+  document.getElementById('configInterval').value = String(cfg.interval || 0);
+  document.getElementById('configModal').classList.add('show');
+}
+function closeConfigModal() {
+  document.getElementById('configModal').classList.remove('show');
+}
+function saveAndExportConfig() {
+  const raw = document.getElementById('configBVList').value;
+  const bvids = raw.split('\n').map(s => s.replace(/#.*$/, '').trim()).filter(Boolean);
+  const interval = parseInt(document.getElementById('configInterval').value) || 0;
+  const cfg = { bvids, interval, lastUpdated: new Date().toISOString() };
+  saveContentConfig(cfg);
+  // Generate downloadable JSON
+  const blob = new Blob([JSON.stringify(cfg, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'english-learning-config.json'; a.click();
+  URL.revokeObjectURL(url);
+  closeConfigModal();
+  alert('\u914d\u7f6e\u5df2\u4fdd\u5b58\u5e76\u4e0b\u8f7d\uff01\u5c06 english-learning-config.json \u53d1\u7ed9 QoderWork \u6267\u884c\u201c\u66f4\u65b0\u82f1\u8bed\u5b66\u4e60\u7f51\u7ad9\u5185\u5bb9\u201d\u5373\u53ef\u81ea\u52a8\u66f4\u65b0\u3002');
+}
+function exportContentConfig() {
+  const cfg = getContentConfig();
+  const blob = new Blob([JSON.stringify(cfg, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'english-learning-config.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+function updateContentDate() {
+  const cfg = getContentConfig();
+  const el = document.getElementById('cubDate');
+  if (el && cfg.lastUpdated) {
+    const d = new Date(cfg.lastUpdated);
+    el.textContent = '\u4e0a\u6b21\u66f4\u65b0: ' + d.toLocaleDateString('zh-CN');
+  } else if (el) {
+    el.textContent = '\u672a\u66f4\u65b0\u8fc7';
+  }
+}
+
+/* ============================================================
+   WORD POPUP
+   ============================================================ */
+const builtInDict = {};
+// Build dict from all word lists
+Object.values(wordLists).forEach(list => {
+  list.words.forEach(w => { builtInDict[w.word.toLowerCase()] = w; });
+});
+// Build dict from transcripts and readings
+videoLessons.forEach(l => {
+  l.transcript.forEach(t => {
+    if (t.vocab) Object.entries(t.vocab).forEach(([w, v]) => {
+      if (!builtInDict[w.toLowerCase()]) {
+        builtInDict[w.toLowerCase()] = { word: w, phonetic: '', pos: v[1], meaning: v[0], example: t.en };
+      }
+    });
+  });
+});
+readingArticles.forEach(a => {
+  a.content.forEach(p => {
+    if (p.vocab) Object.entries(p.vocab).forEach(([w, v]) => {
+      if (!builtInDict[w.toLowerCase()]) {
+        builtInDict[w.toLowerCase()] = { word: w, phonetic: '', pos: v[1], meaning: v[0], example: p.text };
+      }
+    });
+  });
+});
+
+
+/* ---- Video vocab aggregation ---- */
+function buildVideoVocabLists() {
+  // Build "all video vocab" list
+  const allWords = new Map();
+  videoLessons.forEach(l => {
+    l.transcript.forEach(t => {
+      if (t.vocab) Object.entries(t.vocab).forEach(([w, v]) => {
+        const key = w.toLowerCase();
+        if (!allWords.has(key)) {
+          allWords.set(key, { word: w, phonetic: '', pos: v[1], meaning: v[0], example: t.en, source: l.title });
+        }
+      });
+    });
+  });
+  wordLists['videoAll'] = {
+    name: '\ud83c\udfac \u5168\u90e8\u89c6\u9891\u8bcd\u6c47',
+    desc: '\u6240\u6709\u89c6\u9891\u5b57\u5e55\u8bcd\u6c47\u6c47\u603b',
+    words: [...allWords.values()]
+  };
+  // Build per-video vocab lists
+  videoLessons.forEach(l => {
+    const vw = [];
+    l.transcript.forEach(t => {
+      if (t.vocab) Object.entries(t.vocab).forEach(([w, v]) => {
+        vw.push({ word: w, phonetic: '', pos: v[1], meaning: v[0], example: t.en });
+      });
+    });
+    if (vw.length > 0) {
+      wordLists['video-' + l.id] = {
+        name: l.emoji + ' ' + l.title.replace(/^[^·]+·\s*/, ''),
+        desc: l.title,
+        words: vw
+      };
+    }
+  });
+}
+buildVideoVocabLists();
+
+let currentPopupWord = '';
+
+function showWordPopup(word, meaning, pos, example) {
+  currentPopupWord = word.toLowerCase();
+  const dict = builtInDict[currentPopupWord];
+  const popup = document.getElementById('wordPopup');
+  document.getElementById('wpWord').textContent = dict ? dict.word : word;
+  document.getElementById('wpPhonetic').textContent = dict ? dict.phonetic : '';
+  document.getElementById('wpPos').textContent = dict ? dict.pos : (pos || '');
+  document.getElementById('wpMeaning').textContent = dict ? dict.meaning : meaning || '暂无释义';
+  document.getElementById('wpExample').textContent = dict ? ('"' + dict.example + '"') : (example ? '"' + example + '"' : '');
+  document.getElementById('wpExample').style.display = (dict?.example || example) ? 'block' : 'none';
+  document.getElementById('wpStar').textContent = state.starred.has(currentPopupWord) ? '★' : '☆';
+  document.getElementById('wpStar').className = 'wp-star' + (state.starred.has(currentPopupWord) ? ' starred' : '');
+  popup.style.display = 'block';
+  // Position
+  const rect = popup.getBoundingClientRect();
+  let left = Math.min(window.innerWidth - rect.width - 20, Math.max(20, event?.clientX || 300));
+  let top = Math.min(window.innerHeight - rect.height - 20, Math.max(20, (event?.clientY || 300) + 10));
+  popup.style.left = left + 'px';
+  popup.style.top = top + 'px';
+  if (dict) state.wordsLearned.add(currentPopupWord);
+}
+
+function showWordPopupFromVocab(word) {
+  const dict = builtInDict[word.toLowerCase()];
+  if (dict) showWordPopup(dict.word, dict.meaning, dict.pos, dict.example);
+  else showWordPopup(word);
+}
+
+function showReadingWord(word, meaning, pos, example) {
+  showWordPopup(word, meaning, pos, example);
+}
+
+function lookupWord(word) {
+  showWordPopup(word);
+}
+
+function closePopup() {
+  document.getElementById('wordPopup').style.display = 'none';
+}
+
+function toggleStarPopup() {
+  toggleStar(currentPopupWord);
+  document.getElementById('wpStar').textContent = state.starred.has(currentPopupWord) ? '★' : '☆';
+  document.getElementById('wpStar').className = 'wp-star' + (state.starred.has(currentPopupWord) ? ' starred' : '');
+}
+
+function speakWord() {
+  if (currentPopupWord && window.speechSynthesis) {
+    const u = new SpeechSynthesisUtterance(currentPopupWord);
+    u.lang = 'en-US';
+    u.rate = 0.8;
+    speechSynthesis.speak(u);
+  }
+}
+
+// Close popup on outside click (but not during text selection)
+document.addEventListener('mousedown', (e) => {
+  const popup = document.getElementById('wordPopup');
+  if (popup.style.display === 'block' && !popup.contains(e.target) && !e.target.classList.contains('vocab-word') && !e.target.classList.contains('clickable')) {
+    closePopup();
+  }
+});
+
+/* ============================================================
+   MOUSE SELECTION → TRANSLATE
+   ============================================================ */
+document.addEventListener('mouseup', (e) => {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+  const selectedText = sel.toString().trim();
+  if (!selectedText || selectedText.length > 40 || selectedText.length < 2) return;
+  // Skip if selection contains too many words (probably a sentence, not a word)
+  if (selectedText.split(/\s+/).length > 4) return;
+  // Only process if inside reading content
+  const anchorNode = sel.anchorNode;
+  const readingContent = document.getElementById('readingContent');
+  if (!readingContent || !readingContent.contains(anchorNode)) return;
+  // Look up the word
+  const word = selectedText.toLowerCase().replace(/[^a-zA-Z'-]/g, '');
+  if (!word || word.length < 2) return;
+  const dict = builtInDict[word];
+  if (dict) {
+    const range = sel.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    currentPopupWord = word;
+    const popup = document.getElementById('wordPopup');
+    document.getElementById('wpWord').textContent = dict.word;
+    document.getElementById('wpPhonetic').textContent = dict.phonetic;
+    document.getElementById('wpPos').textContent = dict.pos;
+    document.getElementById('wpMeaning').textContent = dict.meaning;
+    document.getElementById('wpExample').textContent = dict.example ? '"' + dict.example + '"' : '';
+    document.getElementById('wpExample').style.display = dict.example ? 'block' : 'none';
+    document.getElementById('wpStar').textContent = state.starred.has(word) ? '★' : '☆';
+    document.getElementById('wpStar').className = 'wp-star' + (state.starred.has(word) ? ' starred' : '');
+    popup.style.display = 'block';
+    let left = Math.min(window.innerWidth - 280, Math.max(10, rect.left + (rect.width / 2) - 130));
+    let top = rect.top - 20;
+    if (top < 200) top = rect.bottom + 10;
+    else top = rect.top - popup.offsetHeight - 10;
+    popup.style.left = Math.max(10, left) + 'px';
+    popup.style.top = Math.max(10, top) + 'px';
+    state.wordsLearned.add(word);
+  }
+});
+
+/* ============================================================
+   TEXT-TO-SPEECH (TTS) READING
+   ============================================================ */
+const readingState = {
+  currentParagraph: 0,
+  isPlaying: false,
+  isPaused: false,
+  speed: 0.85,
+  article: null,
+  utterance: null
+};
+
+function startReading() {
+  if (!readingState.article || !window.speechSynthesis) return;
+  stopReading();
+  readingState.currentParagraph = 0;
+  readingState.isPlaying = true;
+  readingState.isPaused = false;
+  updateAudioUI();
+  speakNextParagraph();
+}
+
+function speakNextParagraph() {
+  if (!readingState.isPlaying || readingState.isPaused) return;
+  const article = readingState.article;
+  if (readingState.currentParagraph >= article.content.length) {
+    stopReading();
+    return;
+  }
+  const para = article.content[readingState.currentParagraph];
+  highlightParagraph(readingState.currentParagraph);
+  const progress = document.getElementById('readingProgress');
+  if (progress) progress.textContent = `${readingState.currentParagraph + 1}/${article.content.length}`;
+  const utterance = new SpeechSynthesisUtterance(para.text);
+  utterance.lang = 'en-US';
+  utterance.rate = readingState.speed;
+  utterance.pitch = 1;
+  utterance.onend = function() {
+    readingState.currentParagraph++;
+    setTimeout(() => speakNextParagraph(), 300);
+  };
+  utterance.onerror = function(e) {
+    if (e.error !== 'canceled' && e.error !== 'interrupted') {
+      readingState.currentParagraph++;
+      setTimeout(() => speakNextParagraph(), 100);
+    }
+  };
+  readingState.utterance = utterance;
+  speechSynthesis.speak(utterance);
+  // Scroll the paragraph into view
+  const el = document.querySelector('.reading-para[data-para-index="' + readingState.currentParagraph + '"]');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function highlightParagraph(idx) {
+  document.querySelectorAll('.reading-para').forEach(p => p.classList.remove('speaking'));
+  const el = document.querySelector('.reading-para[data-para-index="' + idx + '"]');
+  if (el) el.classList.add('speaking');
+}
+
+function togglePause() {
+  if (readingState.isPaused) { resumeReading(); } else { pauseReading(); }
+}
+
+function pauseReading() {
+  readingState.isPaused = true;
+  if (window.speechSynthesis) speechSynthesis.pause();
+  updateAudioUI();
+}
+
+function resumeReading() {
+  readingState.isPaused = false;
+  if (window.speechSynthesis) speechSynthesis.resume();
+  updateAudioUI();
+}
+
+function stopReading() {
+  readingState.isPlaying = false;
+  readingState.isPaused = false;
+  readingState.currentParagraph = 0;
+  if (window.speechSynthesis) { speechSynthesis.cancel(); }
+  document.querySelectorAll('.reading-para').forEach(p => p.classList.remove('speaking'));
+  const progress = document.getElementById('readingProgress');
+  if (progress) progress.textContent = '';
+  updateAudioUI();
+}
+
+function setReadingSpeed(speed) {
+  readingState.speed = speed;
+  document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function updateAudioUI() {
+  const playBtn = document.getElementById('btnPlay');
+  const pauseBtn = document.getElementById('btnPause');
+  if (!playBtn || !pauseBtn) return;
+  if (readingState.isPlaying && !readingState.isPaused) {
+    playBtn.textContent = '▶ 播放中...';
+    playBtn.classList.add('active');
+    playBtn.disabled = true;
+    pauseBtn.disabled = false;
+  } else if (readingState.isPaused) {
+    playBtn.textContent = '▶ 播放';
+    playBtn.classList.remove('active');
+    playBtn.disabled = false;
+    pauseBtn.textContent = '▶ 继续';
+    pauseBtn.disabled = false;
+  } else {
+    playBtn.textContent = '▶ 播放';
+    playBtn.classList.remove('active');
+    playBtn.disabled = false;
+    pauseBtn.textContent = '⏸ 暂停';
+    pauseBtn.disabled = true;
+  }
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+updateStats();
+</script>
+</body>
+</html>
